@@ -295,18 +295,7 @@ function renderSummary() {
   const available = availableTotal();
   const total = assigned + available;
   $("#availableTotal").textContent = format(total);
-  ["remainingGeneral", "remainingSd25", "remainingSd20"].forEach((id, index) => {
-    const type = creditTypes[index];
-    $("#" + id).textContent = format(state.pools[type].available + assignedForType(type));
-  });
   $("#unallocatedSummaryTotal").textContent = format(available);
-  const assignedAngle = total ? (assigned / total) * 360 : 0;
-  $("#allocationDonut").style.setProperty("--assigned-angle", `${assignedAngle}deg`);
-  $("#allocationDonut").setAttribute("aria-label", `已分配 ${format(assigned)}，待分配 ${format(available)}`);
-  ["General", "Sd25", "Sd20"].forEach((suffix, index) => {
-    const type = creditTypes[index];
-    $("#unallocated" + suffix).textContent = format(state.pools[type].available);
-  });
   $("#seatUsed").textContent = String(state.seats.used);
   $("#seatTotal").textContent = String(state.seats.total);
 }

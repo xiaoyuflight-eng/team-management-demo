@@ -1996,7 +1996,7 @@ body.is-points-detail .simulation-switch {
 .allocation-stepper input { width: 100%; min-width: 0; height: 100%; padding: 0 2px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 500; text-align: center; appearance: textfield; -moz-appearance: textfield; }
 .allocation-stepper input::-webkit-inner-spin-button,
 .allocation-stepper input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
-.allocation-input { width: min(132px, 100%); height: 36px; border-radius: 10px; background: #f1f1f2; }
+.allocation-input { width: min(132px, 100%); height: 36px; border-radius: 999px; background: #f1f1f2; }
 .allocation-input:focus-within { outline: 2px solid #9254ff; outline-offset: 2px; }
 .allocation-input input { width: 100%; height: 100%; padding: 0 12px; border: 0; outline: 0; border-radius: inherit; background: transparent; font: inherit; font-size: 14px; font-weight: 500; text-align: center; appearance: textfield; -moz-appearance: textfield; }
 .allocation-input input::-webkit-inner-spin-button,
@@ -2036,27 +2036,14 @@ body.is-points-detail .simulation-switch {
 .summary-grid { grid-template-columns: minmax(0, 1fr) 200px; }
 .credits-card { padding: 20px; }
 .credit-summary-actions { position: absolute; top: 18px; right: 20px; z-index: 1; display: flex; align-items: center; }
-.credit-summary-modules { display: grid; grid-template-columns: 1.35fr 1fr; align-items: stretch; }
-.credit-summary-module { min-width: 0; padding: 6px 20px 4px; }
+.credit-summary-modules { display: grid; grid-template-columns: 1.35fr 1fr; align-items: stretch; min-height: 100px; }
+.credit-summary-module { display: flex; min-width: 0; flex-direction: column; justify-content: center; padding: 22px 20px 4px; }
 .credit-summary-module:first-child { padding-left: 4px; }
 .credit-summary-module:last-child { padding-right: 4px; }
 .credit-summary-module + .credit-summary-module { border-left: 1px solid var(--line-strong); }
 .credit-summary-primary { padding-right: 28px; }
-.credit-module-heading { display: flex; align-items: center; min-height: 52px; }
-.credit-primary-overview { display: flex; align-items: center; gap: 14px; min-height: 70px; }
-.credit-donut { --assigned-angle: 0deg; position: relative; width: 62px; height: 62px; flex: 0 0 62px; border-radius: 50%; background: conic-gradient(#8d50f8 0 var(--assigned-angle), #d8c7f8 var(--assigned-angle) 360deg); }
-.credit-donut::after { position: absolute; inset: 8px; border-radius: 50%; background: #fff; content: ''; }
-.donut-legend { display: flex; gap: 10px; margin-top: 4px; color: var(--text-secondary); font-size: 11px; white-space: nowrap; }
-.donut-legend span { display: inline-flex; align-items: center; gap: 4px; }
-.donut-legend i { width: 6px; height: 6px; border-radius: 50%; }
-.legend-assigned { background: #8d50f8; }
-.legend-unallocated { background: #d8c7f8; }
-.credit-summary-module .large-number { margin-top: 0; font-size: 25px; line-height: 30px; }
+.credit-summary-module .large-number { margin-top: 4px; font-size: 28px; line-height: 34px; font-weight: 600; }
 .credit-summary-primary .large-number { font-size: 34px; line-height: 38px; font-weight: 600; }
-.credit-summary-module .summary-credit-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 10px; margin-top: 8px; }
-.credit-summary-module .allocation-stat { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 2px; }
-.credit-summary-module .allocation-stat span { overflow: hidden; max-width: 100%; color: var(--text-secondary); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.credit-summary-module .allocation-stat strong { font-size: 13px; line-height: 18px; }
 @media (max-width: 900px) {
   .summary-grid { grid-template-columns: 1fr; }
   .team-plan { margin-left: 0; }
@@ -2069,6 +2056,6 @@ body.is-points-detail .simulation-switch {
 @media (max-width: 600px) {
   .credit-summary-modules { grid-template-columns: 1fr; gap: 20px; }
   .credit-summary-module { padding: 0; }
-  .credit-summary-primary { padding: 0; }
+  .credit-summary-primary { padding-top: 20px; }
   .credit-summary-module + .credit-summary-module { border-left: 0; border-top: 1px solid var(--line-strong); padding-top: 20px; }
 }
