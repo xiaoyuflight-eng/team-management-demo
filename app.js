@@ -261,7 +261,6 @@ function renderPointsRows() {
         <span class="allocation-before">${format(member.credits[type])}</span>
         ${creditEditorMarkup(member)}
         <div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>
-        <div class="allocation-editor-footer"><span>输入调后积分，或按 ±100 调整额度，两列自动同步</span></div>
       </div>`;
     }
     const creditCells = readonlyCreditMarkup(member, type, candidate);
@@ -296,6 +295,10 @@ function renderSummary() {
   const total = assigned + available;
   $("#availableTotal").textContent = format(total);
   $("#unallocatedSummaryTotal").textContent = format(available);
+  const proportion = $("#creditProportion");
+  proportion.style.setProperty("--unallocated-share", `${total ? Math.min(100, available / total * 100) : 0}%`);
+  proportion.setAttribute("aria-valuenow", String(available));
+  proportion.setAttribute("aria-valuemax", String(total));
   $("#seatUsed").textContent = String(state.seats.used);
   $("#seatTotal").textContent = String(state.seats.total);
 }
