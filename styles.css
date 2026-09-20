@@ -2034,41 +2034,29 @@ body.is-points-detail .simulation-switch {
 .team-name-row { flex-wrap: wrap; }
 .team-plan { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; font-size: 12px; font-weight: 500; }
 .summary-grid { grid-template-columns: minmax(0, 1fr) 200px; }
-.credits-card { padding: 20px; }
+.credits-card { min-height: 142px; padding: 24px; }
 .credit-summary-actions { position: absolute; top: 18px; right: 20px; z-index: 1; display: flex; align-items: center; }
-.credit-summary-modules { display: grid; grid-template-columns: 1.35fr 1fr; align-items: stretch; }
-.credit-summary-module { min-width: 0; padding: 6px 20px 4px; }
-.credit-summary-module:first-child { padding-left: 4px; }
-.credit-summary-module:last-child { padding-right: 4px; }
-.credit-summary-module + .credit-summary-module { border-left: 1px solid var(--line-strong); }
-.credit-summary-primary { padding-right: 28px; }
-.credit-module-heading { display: flex; align-items: center; min-height: 52px; }
-.credit-primary-overview { display: flex; align-items: center; gap: 14px; min-height: 70px; }
-.credit-donut { --assigned-angle: 0deg; position: relative; width: 62px; height: 62px; flex: 0 0 62px; border-radius: 50%; background: conic-gradient(#8d50f8 0 var(--assigned-angle), #d8c7f8 var(--assigned-angle) 360deg); }
-.credit-donut::after { position: absolute; inset: 8px; border-radius: 50%; background: #fff; content: ''; }
-.donut-legend { display: flex; gap: 10px; margin-top: 4px; color: var(--text-secondary); font-size: 11px; white-space: nowrap; }
-.donut-legend span { display: inline-flex; align-items: center; gap: 4px; }
-.donut-legend i { width: 6px; height: 6px; border-radius: 50%; }
-.legend-assigned { background: #8d50f8; }
-.legend-unallocated { background: #d8c7f8; }
-.credit-summary-module .large-number { margin-top: 0; font-size: 25px; line-height: 30px; }
-.credit-summary-primary .large-number { font-size: 34px; line-height: 38px; font-weight: 600; }
-.credit-summary-module .summary-credit-meta { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 10px; margin-top: 8px; }
-.credit-summary-module .allocation-stat { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 2px; }
-.credit-summary-module .allocation-stat span { overflow: hidden; max-width: 100%; color: var(--text-secondary); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-.credit-summary-module .allocation-stat strong { font-size: 13px; line-height: 18px; }
+.credit-summary-flow { display: grid; grid-template-columns: max-content minmax(190px, 1fr) minmax(150px, .58fr); align-items: center; gap: 30px; min-height: 94px; padding: 4px 118px 4px 8px; }
+.credit-summary-metric { min-width: 0; }
+.credit-summary-metric .card-label { font-size: 14px; line-height: 22px; }
+.credit-summary-metric .large-number { margin-top: 2px; font-size: 38px; font-weight: 600; line-height: 44px; }
+.credit-unallocated-metric .large-number { font-size: 32px; line-height: 40px; }
+.credit-allocation-bridge { display: flex; min-width: 0; align-items: center; }
+.credit-donut { --assigned-angle: 0deg; position: relative; width: 72px; height: 72px; flex: 0 0 72px; border-radius: 50%; background: conic-gradient(#8d50f8 0 var(--assigned-angle), #d8c7f8 var(--assigned-angle) 360deg); }
+.credit-donut::after { position: absolute; inset: 10px; border-radius: 50%; background: #fff; content: ''; }
+.credit-flow-arrow { position: relative; height: 2px; min-width: 72px; flex: 1; margin-left: 14px; background: linear-gradient(90deg, #d8c7f8, #9b65f5); }
+.credit-flow-arrow::after { position: absolute; top: 50%; right: -1px; width: 9px; height: 9px; border-top: 2px solid #9b65f5; border-right: 2px solid #9b65f5; content: ''; transform: translateY(-50%) rotate(45deg); }
 @media (max-width: 900px) {
   .summary-grid { grid-template-columns: 1fr; }
   .team-plan { margin-left: 0; }
 }
 @media (max-width: 1080px) {
-  .credit-summary-modules { grid-template-columns: 1.25fr 1fr; }
-  .credit-summary-module { padding-left: 14px; padding-right: 14px; }
-  .credit-summary-primary { padding-left: 10px; padding-right: 18px; }
+  .credit-summary-flow { grid-template-columns: max-content minmax(150px, 1fr) minmax(140px, .7fr); gap: 22px; padding-right: 100px; }
 }
 @media (max-width: 600px) {
-  .credit-summary-modules { grid-template-columns: 1fr; gap: 20px; }
-  .credit-summary-module { padding: 0; }
-  .credit-summary-primary { padding: 0; }
-  .credit-summary-module + .credit-summary-module { border-left: 0; border-top: 1px solid var(--line-strong); padding-top: 20px; }
+  .credits-card { padding-top: 54px; }
+  .credit-summary-flow { grid-template-columns: 1fr; justify-items: center; gap: 18px; padding: 0; text-align: center; }
+  .credit-allocation-bridge { flex-direction: column; gap: 12px; }
+  .credit-flow-arrow { width: 2px; min-width: 0; height: 42px; margin: 0; background: linear-gradient(180deg, #d8c7f8, #9b65f5); }
+  .credit-flow-arrow::after { top: auto; right: 50%; bottom: -1px; transform: translateX(50%) rotate(135deg); }
 }
