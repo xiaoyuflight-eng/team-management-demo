@@ -2051,7 +2051,7 @@ body.is-points-detail .simulation-switch {
 .credit-donut { position: relative; display: grid; width: 82px; height: 82px; flex: 0 0 82px; place-items: center; border-radius: 50%; background: conic-gradient(#8fcae9 0 11%, #e1e3e6 11% 25%, #139be8 25% 100%); }
 .credit-donut::after { position: absolute; inset: 11px; border-radius: 50%; background: #fff; content: ''; }
 .credit-donut-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
-.credit-donut-center strong { color: #111319; font-size: 22px; font-weight: 650; line-height: 26px; letter-spacing: -.6px; }
+.credit-donut-center strong { color: #111319; font-size: 20px; font-weight: 650; line-height: 26px; letter-spacing: -.6px; }
 .credit-donut-center span { margin-top: 1px; color: var(--text-secondary); font-size: 10px; line-height: 14px; }
 .credit-donut:focus-visible { outline: 2px solid #1598e5; outline-offset: 4px; }
 .credit-donut-tooltip { position: absolute; z-index: 20; top: 50%; left: calc(100% + 14px); display: grid; width: 218px; gap: 10px; padding: 14px 16px; border: 1px solid rgba(21, 23, 28, .1); border-radius: 10px; background: rgba(255, 255, 255, .98); box-shadow: 0 10px 30px rgba(20, 30, 45, .14); opacity: 0; pointer-events: none; transform: translate(6px, -50%); transition: opacity 160ms ease, transform 160ms ease; }
@@ -2069,7 +2069,7 @@ body.is-points-detail .simulation-switch {
 .credit-balance-main { display: flex; min-width: 0; align-items: center; }
 .credit-balance-title { display: flex; align-items: center; gap: 5px; color: #202126; font-size: 16px; font-weight: 600; white-space: nowrap; }
 .credit-balance-title .info-dot { width: 13px; height: 13px; font-size: 8px; }
-.credit-balance-main .large-number { margin: 0; font-size: 24px; font-weight: 500; line-height: 32px; letter-spacing: -.5px; white-space: nowrap; }
+.credit-balance-main .large-number { margin: 0; font-size: 20px; font-weight: 500; line-height: 32px; letter-spacing: -.5px; white-space: nowrap; }
 .credit-balance-breakdown { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 10px; color: #87909b; font-size: 12px; line-height: 18px; }
 .credit-balance-breakdown span { display: inline-flex; align-items: center; gap: 4px; }
 .credit-balance-breakdown strong { color: inherit; font-weight: 500; }
@@ -2223,8 +2223,8 @@ body.is-points-detail .simulation-switch {
         <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
         <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
         <span class="simulation-divider" aria-hidden="true"></span>
-        <button class="simulation-option is-active" data-consumption="off" aria-pressed="true">不消耗</button>
-        <button class="simulation-option" data-consumption="on" aria-pressed="false">模拟消耗</button>
+        <button class="simulation-option" data-consumption="off" aria-pressed="false">不消耗</button>
+        <button class="simulation-option is-active" data-consumption="on" aria-pressed="true">模拟消耗</button>
         <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button></div></details>
       <button class="credit-pill" data-action="buy">
         <span class="credit-gem" aria-hidden="true">✦</span>
@@ -2564,7 +2564,7 @@ const state = {
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
   simulationMode: "all",
-  consumptionMode: "off",
+  consumptionMode: "on",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
   seats: initialSimulation.seats,
@@ -3834,6 +3834,7 @@ donut.addEventListener('pointermove', event => {
 donut.addEventListener('pointerleave', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 
+applyConsumption(true);
 renderAll();
 switchTab("members");
 syncViewFromLocation();

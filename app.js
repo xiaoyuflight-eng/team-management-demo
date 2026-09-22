@@ -82,7 +82,7 @@ const state = {
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
   simulationMode: "all",
-  consumptionMode: "off",
+  consumptionMode: "on",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
   seats: initialSimulation.seats,
@@ -1352,6 +1352,7 @@ donut.addEventListener('pointermove', event => {
 donut.addEventListener('pointerleave', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 
+applyConsumption(true);
 renderAll();
 switchTab("members");
 syncViewFromLocation();
