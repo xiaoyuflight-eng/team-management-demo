@@ -2114,6 +2114,10 @@ body.is-points-detail .simulation-switch {
 .pool-summary-item strong { color: #202126; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.2; }
 .points-table.scheme-one-table { min-width: 900px; grid-template-columns: minmax(190px, 1.35fr) minmax(105px, .72fr) minmax(100px, .72fr) minmax(140px, .9fr) minmax(150px, 1fr) minmax(120px, .78fr); }
 .points-table.scheme-two-table { min-width: 740px; grid-template-columns: minmax(220px, 1.6fr) minmax(110px, 1fr) minmax(100px, 1fr) minmax(160px, 1.2fr) 122px; }
+.points-table.scheme-three-table { min-width: 1120px; grid-template-columns: minmax(170px, 1.35fr) minmax(90px, .72fr) minmax(86px, .68fr) minmax(100px, .76fr) minmax(118px, .9fr) minmax(132px, 1fr) minmax(144px, 1.08fr) minmax(104px, .78fr); }
+.scheme-three-table .allocation-input { width: 120px; height: 32px; border-radius: 8px; background: rgba(0, 0, 0, 0.06); }
+.scheme-three-table .allocation-input input { font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; }
+.credit-type-label { color: var(--text); font-size: 14px; white-space: nowrap; }
 .scheme-credit-select { position: relative; display: inline-flex; width: max-content; max-width: 132px; align-items: center; }
 .scheme-credit-select select { width: 100%; min-width: 106px; padding: 7px 27px 7px 9px; border: 0; outline: 0; color: #26272c; background: transparent; font: inherit; font-size: 14px; appearance: none; cursor: pointer; }
 .scheme-credit-select:focus-within { border-radius: 7px; outline: 2px solid #1598e5; outline-offset: 1px; }
@@ -2212,6 +2216,7 @@ body.is-points-detail .simulation-switch {
         <div class="tool-options" role="tablist" aria-label="积分管理方案">
           <button class="simulation-option is-active" role="tab" aria-selected="true" data-credit-scheme="overview">方案一</button>
           <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="tabs">方案二</button>
+          <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="delta">方案三</button>
         </div>
       </details>
       <details class="simulation-switch tool-switch" open><summary aria-label="展开或收起模拟工具">模拟<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></summary><div class="tool-options" role="group" aria-label="模拟工具">
@@ -2653,9 +2658,11 @@ function visibleCreditTypes() {
 function renderPointCards() {
   const type = state.activeCreditType;
   const pool = state.pools[type];
-  const overviewScheme = state.creditScheme === "overview";
+  const overviewScheme = state.creditScheme !== "tabs";
+  const deltaScheme = state.creditScheme === "delta";
   $("#panel-credits").classList.toggle("is-scheme-overview", overviewScheme);
-  $("#panel-credits").classList.toggle("is-scheme-tabs", !overviewScheme);
+  $("#panel-credits").classList.toggle("is-scheme-tabs", state.creditScheme === "tabs");
+  $("#panel-credits").classList.toggle("is-scheme-delta", deltaScheme);
   $$('[data-credit-scheme]').forEach((button) => {
     const active = button.dataset.creditScheme === state.creditScheme;
     button.classList.toggle("is-active", active);
@@ -2672,7 +2679,7 @@ function renderPointCards() {
 }
 
 function selectCreditScheme(scheme, focus = false) {
-  if (!["overview", "tabs"].includes(scheme) || scheme === state.creditScheme) return;
+  if (!["overview", "tabs", "delta"].includes(scheme) || scheme === state.creditScheme) return;
   if (state.editingMemberId !== null) {
     showToast("请先确认或取消当前积分调整");
     return;
@@ -2757,14 +2764,17 @@ function renderPointsRows() {
   const type = state.activeCreditType;
   const isEditing = state.editingMemberId !== null;
   const overviewScheme = state.creditScheme === "overview";
-  $("#pointsTableHead").className = `data-table points-table table-head ${overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
-  $("#pointsTableHead").innerHTML = overviewScheme && isEditing
+  const deltaScheme = state.creditScheme === "delta";
+  $("#pointsTableHead").className = `data-table points-table table-head ${deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
+  $("#pointsTableHead").innerHTML = deltaScheme
+    ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>调整前 <span class="info-dot" title="成员当前可用积分">i</span></div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>调整后</div><div>调整额 <span class="info-dot" title="本次增加或减少的积分">i</span></div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
+    : overviewScheme && isEditing
     ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
     : `<div>用户</div><div>团队角色</div><div>已消耗</div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`;
   $("#pointsRows").innerHTML = state.members.map((member) => {
     const editing = member.id === state.editingMemberId;
     const candidate = isRecoveryCandidate(member);
-    const rowClasses = ["data-table", "points-table", "table-row", overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
+    const rowClasses = ["data-table", "points-table", "table-row", deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
     if (editing) rowClasses.push("is-editing");
     if (isEditing && !editing) rowClasses.push("is-inactive");
     if (candidate) rowClasses.push("is-recovery-candidate");
@@ -2776,6 +2786,22 @@ function renderPointsRows() {
     }
 
     if (isEditing && !editing) action = '<span class="empty-action">-</span>';
+
+    if (deltaScheme) {
+      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      const before = member.credits[rowType];
+      const after = editing ? Number(state.draftCredits[rowType]) : before;
+      return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
+        <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
+        ${staticRoleMarkup(member)}
+        ${pointMarkup(member.consumed[rowType])}
+        ${pointMarkup(before)}
+        ${editing ? schemeCreditTypeSelector(member, rowType) : `<div class="credit-type-label">${escapeHTML(state.pools[rowType].label)}</div>`}
+        ${editing ? allocationInputMarkup(member, rowType) : pointMarkup(after)}
+        ${editing ? allocationStepperMarkup(member, rowType, "delta") : pointMarkup(0)}
+        <div class="points-operation">${action}</div>
+      </div>`;
+    }
 
     if (overviewScheme) {
       const rowType = editing ? type : selectedMemberCreditType(member.id);
@@ -3682,7 +3708,10 @@ document.addEventListener("keydown", (event) => {
   const scheme = document.activeElement?.dataset.creditScheme;
   if (scheme && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
     event.preventDefault();
-    selectCreditScheme(event.key === 'Home' ? 'overview' : event.key === 'End' ? 'tabs' : scheme === 'overview' ? 'tabs' : 'overview', true);
+    const schemes = ["overview", "tabs", "delta"];
+    const index = schemes.indexOf(scheme);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? schemes.length - 1 : (index + (event.key === "ArrowRight" ? 1 : schemes.length - 1)) % schemes.length;
+    selectCreditScheme(schemes[next], true);
     return;
   }
   const creditType = document.activeElement?.dataset.creditTab;

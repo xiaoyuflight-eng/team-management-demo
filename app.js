@@ -175,9 +175,11 @@ function visibleCreditTypes() {
 function renderPointCards() {
   const type = state.activeCreditType;
   const pool = state.pools[type];
-  const overviewScheme = state.creditScheme === "overview";
+  const overviewScheme = state.creditScheme !== "tabs";
+  const deltaScheme = state.creditScheme === "delta";
   $("#panel-credits").classList.toggle("is-scheme-overview", overviewScheme);
-  $("#panel-credits").classList.toggle("is-scheme-tabs", !overviewScheme);
+  $("#panel-credits").classList.toggle("is-scheme-tabs", state.creditScheme === "tabs");
+  $("#panel-credits").classList.toggle("is-scheme-delta", deltaScheme);
   $$('[data-credit-scheme]').forEach((button) => {
     const active = button.dataset.creditScheme === state.creditScheme;
     button.classList.toggle("is-active", active);
@@ -194,7 +196,7 @@ function renderPointCards() {
 }
 
 function selectCreditScheme(scheme, focus = false) {
-  if (!["overview", "tabs"].includes(scheme) || scheme === state.creditScheme) return;
+  if (!["overview", "tabs", "delta"].includes(scheme) || scheme === state.creditScheme) return;
   if (state.editingMemberId !== null) {
     showToast("请先确认或取消当前积分调整");
     return;
@@ -279,14 +281,17 @@ function renderPointsRows() {
   const type = state.activeCreditType;
   const isEditing = state.editingMemberId !== null;
   const overviewScheme = state.creditScheme === "overview";
-  $("#pointsTableHead").className = `data-table points-table table-head ${overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
-  $("#pointsTableHead").innerHTML = overviewScheme && isEditing
+  const deltaScheme = state.creditScheme === "delta";
+  $("#pointsTableHead").className = `data-table points-table table-head ${deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
+  $("#pointsTableHead").innerHTML = deltaScheme
+    ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>调整前 <span class="info-dot" title="成员当前可用积分">i</span></div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>调整后</div><div>调整额 <span class="info-dot" title="本次增加或减少的积分">i</span></div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
+    : overviewScheme && isEditing
     ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
     : `<div>用户</div><div>团队角色</div><div>已消耗</div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`;
   $("#pointsRows").innerHTML = state.members.map((member) => {
     const editing = member.id === state.editingMemberId;
     const candidate = isRecoveryCandidate(member);
-    const rowClasses = ["data-table", "points-table", "table-row", overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
+    const rowClasses = ["data-table", "points-table", "table-row", deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
     if (editing) rowClasses.push("is-editing");
     if (isEditing && !editing) rowClasses.push("is-inactive");
     if (candidate) rowClasses.push("is-recovery-candidate");
@@ -298,6 +303,22 @@ function renderPointsRows() {
     }
 
     if (isEditing && !editing) action = '<span class="empty-action">-</span>';
+
+    if (deltaScheme) {
+      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      const before = member.credits[rowType];
+      const after = editing ? Number(state.draftCredits[rowType]) : before;
+      return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
+        <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
+        ${staticRoleMarkup(member)}
+        ${pointMarkup(member.consumed[rowType])}
+        ${pointMarkup(before)}
+        ${editing ? schemeCreditTypeSelector(member, rowType) : `<div class="credit-type-label">${escapeHTML(state.pools[rowType].label)}</div>`}
+        ${editing ? allocationInputMarkup(member, rowType) : pointMarkup(after)}
+        ${editing ? allocationStepperMarkup(member, rowType, "delta") : pointMarkup(0)}
+        <div class="points-operation">${action}</div>
+      </div>`;
+    }
 
     if (overviewScheme) {
       const rowType = editing ? type : selectedMemberCreditType(member.id);
@@ -1204,7 +1225,10 @@ document.addEventListener("keydown", (event) => {
   const scheme = document.activeElement?.dataset.creditScheme;
   if (scheme && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
     event.preventDefault();
-    selectCreditScheme(event.key === 'Home' ? 'overview' : event.key === 'End' ? 'tabs' : scheme === 'overview' ? 'tabs' : 'overview', true);
+    const schemes = ["overview", "tabs", "delta"];
+    const index = schemes.indexOf(scheme);
+    const next = event.key === "Home" ? 0 : event.key === "End" ? schemes.length - 1 : (index + (event.key === "ArrowRight" ? 1 : schemes.length - 1)) % schemes.length;
+    selectCreditScheme(schemes[next], true);
     return;
   }
   const creditType = document.activeElement?.dataset.creditTab;
