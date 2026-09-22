@@ -2108,7 +2108,7 @@ body.is-points-detail .simulation-switch {
 .points-table.scheme-two-table { min-width: 740px; grid-template-columns: minmax(220px, 1.6fr) minmax(110px, 1fr) minmax(100px, 1fr) minmax(160px, 1.2fr) 122px; }
 .points-table.scheme-three-table { min-width: 1120px; grid-template-columns: minmax(170px, 1.35fr) minmax(90px, .72fr) minmax(86px, .68fr) minmax(100px, .76fr) minmax(118px, .9fr) minmax(132px, 1fr) minmax(144px, 1.08fr) minmax(104px, .78fr); }
 .scheme-three-table .allocation-input { width: 120px; height: 32px; border-radius: 20px; background: rgba(0, 0, 0, 0.06); }
-.scheme-three-table .allocation-input input { font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; }
+.scheme-three-table .allocation-input input { border-radius: 20px; font-family: Montserrat, sans-serif; font-size: 12px; font-weight: 400; }
 .credit-type-label { color: var(--text); font-size: 14px; white-space: nowrap; }
 .scheme-credit-select { position: relative; display: inline-flex; width: max-content; max-width: 132px; align-items: center; }
 .scheme-credit-select select { width: 100%; min-width: 106px; padding: 7px 27px 7px 9px; border: 0; outline: 0; color: #26272c; background: transparent; font: inherit; font-size: 14px; appearance: none; cursor: pointer; }
