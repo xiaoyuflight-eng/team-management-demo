@@ -66,7 +66,9 @@ const simulationPresets = {
 };
 
 function cloneSimulationPreset(mode) {
-  return JSON.parse(JSON.stringify(simulationPresets[mode]));
+  const preset = JSON.parse(JSON.stringify(simulationPresets[mode]));
+  creditTypes.forEach(type => { preset.pools[type].total = preset.pools[type].available + preset.members.reduce((sum, member) => sum + member.credits[type], 0); });
+  return preset;
 }
 
 const initialSimulation = cloneSimulationPreset("all");
@@ -74,11 +76,13 @@ const initialSimulation = cloneSimulationPreset("all");
 const state = {
   activeView: "team",
   activeTab: "members",
+  creditScheme: "overview",
   activeCreditType: "general",
+  memberCreditTypes: Object.fromEntries(initialSimulation.members.map((member) => [member.id, "general"])),
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
-  solutionMode: "one",
   simulationMode: "all",
+  consumptionMode: "off",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
   seats: initialSimulation.seats,
@@ -171,10 +175,34 @@ function visibleCreditTypes() {
 function renderPointCards() {
   const type = state.activeCreditType;
   const pool = state.pools[type];
+  const overviewScheme = state.creditScheme === "overview";
+  $("#panel-credits").classList.toggle("is-scheme-overview", overviewScheme);
+  $("#panel-credits").classList.toggle("is-scheme-tabs", !overviewScheme);
+  $$('[data-credit-scheme]').forEach((button) => {
+    const active = button.dataset.creditScheme === state.creditScheme;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
   $("#creditTypeTabs").innerHTML = visibleCreditTypes().map((key) => `<button type="button" class="credit-subtab${key === type ? ' is-active' : ''}" id="credit-tab-${key}" role="tab" aria-selected="${key === type}" aria-controls="creditTypeContent" tabindex="${key === type ? 0 : -1}" data-credit-tab="${key}">${key === 'general' ? '通用积分' : key === 'sd25' ? 'SD 2.5' : 'SD 2.0'}</button>`).join('');
+  $("#creditTypeTabs").hidden = overviewScheme;
   $("#creditTypeContent").setAttribute("aria-labelledby", "credit-tab-" + type);
-  $("#pointsOverview").innerHTML = `<div class="unallocated-summary"><span>待分配${pool.label}</span><strong>${format(pool.available)}</strong></div><p class="allocation-guidance">支持成员积分灵活调配，回收的积分将归入此处</p>`;
-  $("#creditBalanceHeader").textContent = "剩余" + pool.label;
+  $("#pointsOverview").classList.toggle("is-all-types", overviewScheme);
+  $("#pointsOverview").innerHTML = overviewScheme
+    ? visibleCreditTypes().map((key) => `<div class="pool-summary-item"><span>${key === "general" ? "通用" : key === "sd25" ? "SD 2.5" : "SD 2.0"}待分配积分</span><strong>${format(state.pools[key].available)}</strong></div>`).join("")
+    : `<div class="unallocated-summary"><span>待分配${pool.label}</span><strong>${format(pool.available)}</strong></div><p class="allocation-guidance">支持成员积分灵活调配，回收的积分将归入此处</p>`;
+}
+
+function selectCreditScheme(scheme, focus = false) {
+  if (!["overview", "tabs"].includes(scheme) || scheme === state.creditScheme) return;
+  if (state.editingMemberId !== null) {
+    showToast("请先确认或取消当前积分调整");
+    return;
+  }
+  state.creditScheme = scheme;
+  renderPointCards();
+  renderPointsRows();
+  if (focus) $(`[data-credit-scheme="${scheme}"]`)?.focus();
 }
 
 function selectCreditTab(type, focus = false) {
@@ -191,16 +219,13 @@ function selectCreditTab(type, focus = false) {
 }
 
 function renderSimulationSwitch() {
+  $$('[data-consumption]').forEach(button => {
+    const active = button.dataset.consumption === state.consumptionMode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
   $$('[data-simulation-mode]').forEach((button) => {
     const active = button.dataset.simulationMode === state.simulationMode;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-}
-
-function renderSolutionSwitch() {
-  $$('[data-solution-mode]').forEach((button) => {
-    const active = button.dataset.solutionMode === state.solutionMode;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   });
@@ -214,7 +239,7 @@ function allocationStepperMarkup(member, type, field) {
   const min = field === "after" ? 0 : -before;
   const max = field === "after" ? maxAfter : state.pools[type].available;
   const fieldLabel = field === "after" ? "调后" : "调整额";
-  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}>−</button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}>＋</button></div>`;
+  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}><img src="./assets/step-minus.png" alt="" /></button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}><img src="./assets/step-plus.png" alt="" /></button></div>`;
 }
 
 function allocationInputMarkup(member, type) {
@@ -223,12 +248,13 @@ function allocationInputMarkup(member, type) {
   return `<div class="allocation-input"><input type="number" min="0" max="${max}" step="1" value="${escapeHTML(Number(state.draftCredits[type]))}" data-draft-input data-draft-field="after" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}调后" /></div>`;
 }
 
-function creditEditorMarkup(member) {
-  const type = state.activeCreditType;
-  return `<div class="allocation-editor-line" data-allocation-type="${type}" role="group" aria-label="${escapeHTML(member.name)}${state.pools[type].label}调配">
-    ${allocationInputMarkup(member, type)}
-    ${allocationStepperMarkup(member, type, "delta")}
-  </div>`;
+function selectedMemberCreditType(memberId) {
+  const selected = state.memberCreditTypes[memberId] || "general";
+  return visibleCreditTypes().includes(selected) ? selected : "general";
+}
+
+function schemeCreditTypeSelector(member, selectedType) {
+  return `<div class="scheme-credit-select"><select class="sr-only" tabindex="-1" aria-hidden="true" data-scheme-credit-type data-member-id="${member.id}">${visibleCreditTypes().map(type => `<option value="${type}"${type === selectedType ? " selected" : ""}>${escapeHTML(state.pools[type].label)}</option>`).join("")}</select><button class="credit-select-trigger" data-credit-menu="${member.id}" aria-label="${escapeHTML(member.name)}的积分类型" aria-haspopup="listbox" aria-expanded="false"><span>${escapeHTML(state.pools[selectedType].label)}</span><img src="./assets/chevron-down.svg" alt="" /></button></div>`;
 }
 
 function shortageTypes() {
@@ -252,62 +278,74 @@ function readonlyCreditMarkup(member, type, candidate) {
 function renderPointsRows() {
   const type = state.activeCreditType;
   const isEditing = state.editingMemberId !== null;
-  $("#creditConsumedHeader").textContent = isEditing ? "调前" : "已消耗";
-  $("#creditBalanceHeader").textContent = isEditing ? "调后" : "剩余" + state.pools[type].label;
-  $("#creditActionHeader").textContent = isEditing ? "调整额" : "操作";
-  $("#creditEditOperationHeader").hidden = !isEditing;
-  $("#pointsTableHead").classList.toggle("is-credit-editing", isEditing);
+  const overviewScheme = state.creditScheme === "overview";
+  $("#pointsTableHead").className = `data-table points-table table-head ${overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
+  $("#pointsTableHead").innerHTML = overviewScheme && isEditing
+    ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
+    : `<div>用户</div><div>团队角色</div><div>已消耗</div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`;
   $("#pointsRows").innerHTML = state.members.map((member) => {
     const editing = member.id === state.editingMemberId;
     const candidate = isRecoveryCandidate(member);
-    const rowClasses = ["data-table", "points-table", "table-row"];
+    const rowClasses = ["data-table", "points-table", "table-row", overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
     if (editing) rowClasses.push("is-editing");
+    if (isEditing && !editing) rowClasses.push("is-inactive");
     if (candidate) rowClasses.push("is-recovery-candidate");
-    if (editing) {
-      return `<div class="allocation-editor-row" data-member-id="${member.id}">
-        <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
-        ${staticRoleMarkup(member)}
-        <span class="allocation-before">${format(member.credits[type])}</span>
-        ${creditEditorMarkup(member)}
-        <div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>
-      </div>`;
-    }
-    const creditCells = readonlyCreditMarkup(member, type, candidate);
 
     let action = `<button class="action-link" data-edit-credits="${member.id}"${state.editingMemberId !== null ? ' disabled title="请先确认或取消当前成员的修改"' : ''}>积分调配</button>`;
+    if (editing) action = `<div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>`;
     if (candidate) {
       action = `<div class="row-actions"><button class="action-link" data-recover-candidate="${member.id}">回收可用</button></div>`;
     }
 
-    return `
-      <div class="${rowClasses.join(" ")}${isEditing ? " is-credit-editing" : ""}" data-member-id="${member.id}">
+    if (isEditing && !editing) action = '<span class="empty-action">-</span>';
+
+    if (overviewScheme) {
+      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
         <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
         ${staticRoleMarkup(member)}
-        <div>${format(member.consumed[type])}</div>
-        ${creditCells}
-        ${isEditing ? '<div class="editing-adjustment-placeholder"></div>' : ""}
+        ${pointMarkup(editing ? member.consumed[rowType] : consumedTotal(member))}
+        ${isEditing ? (editing ? schemeCreditTypeSelector(member, rowType) : '<div class="credit-type-empty">-</div>') : ""}
+        ${editing ? allocationStepperMarkup(member, type, "after") : pointMarkup(memberTotal(member))}
         <div class="points-operation">${action}</div>
-      </div>
-    `;
+      </div>`;
+    }
+
+    return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
+      <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
+      ${staticRoleMarkup(member)}
+      ${pointMarkup(member.consumed[type])}
+      ${editing ? allocationStepperMarkup(member, type, "after") : readonlyCreditMarkup(member, type, candidate)}
+      <div class="points-operation">${action}</div>
+    </div>`;
   }).join("");
 }
 
 function renderShortageBanner() {
   const banner = $("#shortageBanner");
   banner.hidden = !state.shortage;
-  banner.innerHTML = state.shortage ? '团队待分配积分不足。有余额的成员已高亮，可先回收，再确认追加。' : "";
+  banner.innerHTML = state.shortage ? '团队待分配积分不足，请减少调配数量，或取消本次编辑后先回收其他成员积分。' : "";
 }
 
 function renderSummary() {
   const assigned = assignedTotal();
   const available = availableTotal();
   const total = assigned + available;
+  const consumed = teamConsumedTotal();
+  const gross = total + consumed;
+  const remainingPercent = gross ? Math.round(total / gross * 100) : 0;
+  const first = gross ? available / gross * 100 : 0;
+  const second = gross ? (available + assigned) / gross * 100 : 0;
+  $("#allocationDonut").style.background = gross ? `conic-gradient(var(--credit-purple) 0 ${first}%, var(--credit-purple-light) ${first}% ${second}%, #e1e3e6 ${second}% 100%)` : '#e1e3e6';
+  $("#headerCredit").textContent = format(state.members.find(member => member.locked)?.credits ? memberTotal(state.members.find(member => member.locked)) : 0);
   $("#availableTotal").textContent = format(total);
   $("#unallocatedSummaryTotal").textContent = format(available);
-  const proportion = $("#creditProportion");
-  proportion.style.setProperty("--unallocated-share", `${total ? Math.min(100, available / total * 100) : 0}%`);
-  proportion.setAttribute("aria-valuenow", String(available));
-  proportion.setAttribute("aria-valuemax", String(total));
+  $("#assignedSummaryTotal").textContent = format(assigned);
+  $("#tooltipUnallocated").textContent = format(available);
+  $("#tooltipAssigned").textContent = format(assigned);
+  $("#tooltipConsumed").textContent = format(consumed);
+  $("#remainingPercent").textContent = `${remainingPercent}%`;
+  $("#allocationDonut").setAttribute("aria-label", `积分剩余 ${remainingPercent}%，剩余总积分 ${format(total)}`);
   $("#seatUsed").textContent = String(state.seats.used);
   $("#seatTotal").textContent = String(state.seats.total);
 }
@@ -399,7 +437,7 @@ function renderDetailLedger() {
         <div>2026/09/08 21:14</div>
         <div>团队会员积分</div>
         <div>团队</div>
-        <div>+23,100</div>
+        <div>+${format(creditTypes.reduce((sum, type) => sum + simulationPresets[state.simulationMode].pools[type].available + simulationPresets[state.simulationMode].members.reduce((n, member) => n + member.credits[type], 0), 0))}</div>
       </div>
     `;
     return;
@@ -420,7 +458,7 @@ function renderDetailLedger() {
 
 function renderPointsDetail() {
   if (!$("#pointsDetailView")) return;
-  const available = availableTotal();
+  const available = remainingTotal();
   const subscription = Math.max(0, available - state.rechargeCredits - state.giftCredits);
   const consumed = teamConsumedTotal();
   const consumedCount = state.members.reduce((count, member) => count + creditTypes.filter((type) => member.consumed[type] > 0).length, 0);
@@ -448,7 +486,6 @@ function renderPointsDetail() {
 }
 
 function renderAll() {
-  renderSolutionSwitch();
   renderSimulationSwitch();
   renderMemberRows();
   renderPointCards();
@@ -528,6 +565,8 @@ function applySimulationMode(mode) {
   state.pools = preset.pools;
   state.seats = preset.seats;
   state.members = preset.members;
+  if (state.consumptionMode === "on") applyConsumption(true);
+  state.memberCreditTypes = Object.fromEntries(preset.members.map((member) => [member.id, "general"]));
   state.pendingInvites = [];
   state.transactions = [];
   state.rechargeCredits = 0;
@@ -546,12 +585,13 @@ function beginCreditEdit(memberId) {
   }
   const member = state.members.find((item) => item.id === Number(memberId));
   if (!member) return;
+  if (state.creditScheme === "overview") state.activeCreditType = selectedMemberCreditType(member.id);
   state.editingMemberId = member.id;
   state.draftCredits = { ...member.credits };
   state.shortage = null;
   renderPointsRows();
   renderShortageBanner();
-  window.setTimeout(() => $("[data-draft-input]")?.select(), 20);
+  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
 }
 
 function cancelCreditEdit() {
@@ -994,6 +1034,11 @@ async function copyText(value, successMessage) {
 }
 
 document.addEventListener("click", (event) => {
+  const schemeButton = event.target.closest("[data-credit-scheme]");
+  if (schemeButton) {
+    selectCreditScheme(schemeButton.dataset.creditScheme, true);
+    return;
+  }
   const creditTab = event.target.closest("[data-credit-tab]");
   if (creditTab) {
     selectCreditTab(creditTab.dataset.creditTab, true);
@@ -1002,13 +1047,6 @@ document.addEventListener("click", (event) => {
   const simulationButton = event.target.closest("[data-simulation-mode]");
   if (simulationButton) {
     applySimulationMode(simulationButton.dataset.simulationMode);
-    return;
-  }
-  const solutionButton = event.target.closest("[data-solution-mode]");
-  if (solutionButton) {
-    state.solutionMode = solutionButton.dataset.solutionMode;
-    renderSolutionSwitch();
-    showToast(state.solutionMode === "one" ? "已切换至方案一" : "已切换至方案二");
     return;
   }
 
@@ -1144,7 +1182,31 @@ $("#modalBody").addEventListener("change", (event) => {
   if (event.target.id === "recoveryType") updateRecoveryLimit();
 });
 
+document.addEventListener("change", (event) => {
+  const selector = event.target.closest("[data-scheme-credit-type]");
+  if (!selector) return;
+  const memberId = Number(selector.dataset.memberId);
+  state.memberCreditTypes[memberId] = selector.value;
+  if (state.editingMemberId === null) {
+    renderPointsRows();
+    return;
+  }
+  if (memberId !== state.editingMemberId) return;
+  state.activeCreditType = selector.value;
+  state.shortage = null;
+  renderPointCards();
+  renderPointsRows();
+  renderShortageBanner();
+  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
+});
+
 document.addEventListener("keydown", (event) => {
+  const scheme = document.activeElement?.dataset.creditScheme;
+  if (scheme && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+    event.preventDefault();
+    selectCreditScheme(event.key === 'Home' ? 'overview' : event.key === 'End' ? 'tabs' : scheme === 'overview' ? 'tabs' : 'overview', true);
+    return;
+  }
   const creditType = document.activeElement?.dataset.creditTab;
   if (creditType && ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
     event.preventDefault();
@@ -1170,6 +1232,101 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("popstate", syncViewFromLocation);
+
+
+function applyConsumption(enabled) {
+  state.members.forEach(member => visibleCreditTypes().forEach(type => {
+    if (enabled) {
+      const amount = Math.floor(member.credits[type] * .1);
+      member.credits[type] -= amount;
+      member.consumed[type] += amount;
+    } else {
+      member.credits[type] += member.consumed[type];
+      member.consumed[type] = 0;
+    }
+  }));
+}
+let creditMenuTrigger = null;
+function closeCreditMenu(restoreFocus = false) {
+  document.querySelector('.credit-select-menu')?.remove();
+  creditMenuTrigger?.setAttribute('aria-expanded', 'false');
+  if (restoreFocus) creditMenuTrigger?.focus();
+  creditMenuTrigger = null;
+}
+function openCreditMenu(trigger) {
+  const alreadyOpen = trigger === creditMenuTrigger;
+  closeCreditMenu();
+  if (alreadyOpen) return;
+  creditMenuTrigger = trigger;
+  trigger.setAttribute('aria-expanded', 'true');
+  const memberId = Number(trigger.dataset.creditMenu);
+  const selected = selectedMemberCreditType(memberId);
+  const menu = document.createElement('div');
+  menu.className = 'credit-select-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.setAttribute('aria-label', trigger.getAttribute('aria-label'));
+  menu.innerHTML = visibleCreditTypes().map(type => `<button role="option" aria-selected="${type === selected}" data-menu-type="${type}" data-member-id="${memberId}"><span>${escapeHTML(state.pools[type].label)}</span>${type === selected ? '<img src="./assets/check.svg" alt="" />' : ''}</button>`).join('');
+  document.body.appendChild(menu);
+  const rect = trigger.getBoundingClientRect();
+  menu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 168)) + 'px';
+  const height = menu.offsetHeight;
+  menu.style.top = (rect.bottom + height + 8 > window.innerHeight ? Math.max(8, rect.top - height - 4) : rect.bottom + 4) + 'px';
+  menu.querySelector('[aria-selected="true"]').focus();
+}
+document.addEventListener('click', event => {
+  const consume = event.target.closest('[data-consumption]');
+  if (consume && consume.dataset.consumption !== state.consumptionMode) {
+    if (state.editingMemberId !== null) { showToast('请先确认或取消当前积分调整'); return; }
+    closeCreditMenu();
+    state.consumptionMode = consume.dataset.consumption;
+    applyConsumption(state.consumptionMode === 'on');
+    renderAll();
+    showToast(state.consumptionMode === 'on' ? '已模拟各成员各类型积分消耗 10%' : '已还原模拟消耗的积分');
+  }
+  const trigger = event.target.closest('[data-credit-menu]');
+  if (trigger) { openCreditMenu(trigger); return; }
+  const option = event.target.closest('[data-menu-type]');
+  if (option) {
+    const memberId = option.dataset.memberId;
+    const select = document.querySelector(`[data-scheme-credit-type][data-member-id="${memberId}"]`);
+    select.value = option.dataset.menuType;
+    closeCreditMenu();
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    document.querySelector(`[data-credit-menu="${memberId}"]`)?.focus();
+    return;
+  }
+  if (!event.target.closest('.credit-select-menu')) closeCreditMenu();
+});
+document.addEventListener('keydown', event => {
+  if (!creditMenuTrigger) return;
+  const options = [...document.querySelectorAll('.credit-select-menu [role="option"]')];
+  const index = options.indexOf(document.activeElement);
+  if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length;
+    options[next].focus();
+  }
+  if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); closeCreditMenu(true); }
+  if (event.key === 'Tab') closeCreditMenu(true);
+}, true);
+window.addEventListener('resize', () => closeCreditMenu());
+document.addEventListener('scroll', () => closeCreditMenu(), true);
+const donut = document.querySelector('#allocationDonut');
+donut.addEventListener('pointermove', event => {
+  const rect = donut.getBoundingClientRect();
+  const x = event.clientX - rect.left - rect.width / 2;
+  const y = event.clientY - rect.top - rect.height / 2;
+  const radius = Math.hypot(x, y);
+  const total = remainingTotal() + teamConsumedTotal();
+  let index = -1;
+  if (radius >= rect.width / 2 - 11 && radius <= rect.width / 2 && total) {
+    const fraction = ((Math.atan2(y, x) + Math.PI / 2 + Math.PI * 2) % (Math.PI * 2)) / (Math.PI * 2);
+    index = fraction < availableTotal() / total ? 0 : fraction < remainingTotal() / total ? 1 : 2;
+  }
+  document.querySelectorAll('.credit-tooltip-row').forEach((row, i) => row.hidden = index !== -1 && index !== i);
+});
+donut.addEventListener('pointerleave', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
+donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 
 renderAll();
 switchTab("members");

@@ -6,6 +6,7 @@
     <meta name="description" content="团队管理与积分管理交互 Demo" />
     <title>团队管理 · 交互 Demo</title>
     <style>
+
 :root {
   --bg: #f5f5f6;
   --surface: #ffffff;
@@ -268,12 +269,6 @@ select:focus-visible {
   backdrop-filter: blur(18px);
 }
 
-.topbar-switches {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
 .simulation-switch {
   display: inline-flex;
   height: 32px;
@@ -315,10 +310,6 @@ select:focus-visible {
   color: #fff;
   background: #19191d;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.13);
-}
-
-.solution-switch .simulation-option {
-  min-width: 48px;
 }
 
 .credit-pill {
@@ -807,7 +798,7 @@ select:focus-visible {
 }
 
 .table-row:hover {
-  background: rgba(255, 255, 255, 0.55);
+  background: #f2f2f2;
 }
 
 .user-cell {
@@ -1046,7 +1037,6 @@ select:focus-visible {
 }
 
 .points-table.table-row.is-editing {
-  background: rgba(72, 72, 73, 0.04);
   box-shadow: none;
 }
 
@@ -1958,8 +1948,8 @@ body.is-points-detail .simulation-switch {
 .credit-subtab:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; border-radius: 2px; }
 #pointsOverview { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin: 0 0 20px; padding: 20px 28px; border-radius: 16px; box-shadow: none; }
 .unallocated-summary { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; flex-shrink: 0; }
-.unallocated-summary > span { color: var(--text-secondary); font-size: 14px; }
-.unallocated-summary > strong { font-size: 28px; line-height: 1.2; font-weight: 600; font-variant-numeric: tabular-nums; }
+.unallocated-summary > span { color: var(--text-secondary); font-size: 12px; }
+.unallocated-summary > strong { font-size: 20px; line-height: 1.2; font-weight: 600; font-variant-numeric: tabular-nums; }
 .points-table { min-width: 740px; grid-template-columns: minmax(220px, 1.6fr) minmax(110px, 1fr) minmax(100px, 1fr) minmax(160px, 1.2fr) 122px; }
 .points-table.is-credit-editing { min-width: 860px; grid-template-columns: minmax(190px, 1.45fr) minmax(100px, .8fr) minmax(84px, .65fr) minmax(132px, 1fr) minmax(150px, 1.05fr) 100px; }
 
@@ -2006,25 +1996,28 @@ body.is-points-detail .simulation-switch {
 }
 .allocation-editor-line { display: contents; }
 .allocation-before { color: #2f2f35; font-size: 14px; font-variant-numeric: tabular-nums; }
-.allocation-stepper { display: grid; overflow: hidden; width: min(154px, 100%); height: 36px; grid-template-columns: 34px 1fr 34px; align-items: center; border-radius: 999px; background: #f1f1f2; }
-.allocation-stepper:focus-within { outline: 2px solid #9254ff; outline-offset: 2px; }
-.allocation-stepper button { display: grid; height: 100%; place-items: center; padding: 0; border: 0; color: #17171b; background: transparent; cursor: pointer; font-size: 22px; }
+.allocation-stepper { display: grid; overflow: hidden; width: 144px; height: 32px; grid-template-columns: 32px minmax(0, 1fr) 32px; gap: 8px; align-items: center; border: 0; border-radius: 26px; background: #f2f2f2; }
+.allocation-stepper:focus-within { box-shadow: none; }
+.allocation-stepper button:focus-visible { outline: 2px solid var(--credit-purple); outline-offset: -3px; border-radius: 50%; }
+.allocation-stepper button { display: grid; width: 32px; height: 32px; place-items: center; padding: 0; border: 0; color: #17171b; background: transparent; cursor: pointer; font-size: 24px; font-weight: 400; }
 .allocation-stepper button:hover { background: #e5e5e7; }
 .allocation-stepper button:disabled { opacity: .3; cursor: default; }
-.allocation-stepper input { width: 100%; min-width: 0; height: 100%; padding: 0 2px; border: 0; outline: 0; background: transparent; font: inherit; font-size: 14px; font-weight: 500; text-align: center; appearance: textfield; -moz-appearance: textfield; }
+.allocation-stepper input { width: 53px; justify-self: center; min-width: 0; height: 20px; padding: 0; border: 0; outline: 0; background: transparent; color: #000; font-family: Montserrat, sans-serif; font-size: 12px; line-height: 20px; font-weight: 400; text-align: center; appearance: textfield; -moz-appearance: textfield; }
 .allocation-stepper input::-webkit-inner-spin-button,
 .allocation-stepper input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
-.allocation-input { width: min(132px, 100%); height: 36px; border-radius: 999px; background: #f1f1f2; }
+.allocation-input { width: min(132px, 100%); height: 36px; border-radius: 10px; background: #f1f1f2; }
 .allocation-input:focus-within { outline: 2px solid #9254ff; outline-offset: 2px; }
 .allocation-input input { width: 100%; height: 100%; padding: 0 12px; border: 0; outline: 0; border-radius: inherit; background: transparent; font: inherit; font-size: 14px; font-weight: 500; text-align: center; appearance: textfield; -moz-appearance: textfield; }
 .allocation-input input::-webkit-inner-spin-button,
 .allocation-input input::-webkit-outer-spin-button { margin: 0; -webkit-appearance: none; }
 .allocation-editor-actions { justify-content: flex-start; white-space: nowrap; }
+.allocation-editor-footer { display: flex; min-height: 26px; grid-column: 3 / 6; align-items: flex-end; padding-top: 2px; }
+.allocation-editor-footer > span { color: var(--text-secondary); font-size: 12px; }
 @media (max-width: 980px) {
   .allocation-editor-row { overflow-x: auto; }
 }
 
-.allocation-guidance { margin: 0; color: var(--text-secondary); font-size: 14px; line-height: 1.5; }
+.allocation-guidance { margin: 0; color: var(--text-secondary); font-size: 12px; line-height: 1.5; }
 @media (max-width: 700px) { #pointsOverview { align-items: flex-start; flex-direction: column; gap: 12px; padding: 20px; } }
 
 /* Inline credit balances, matching the supplied legend reference. */
@@ -2046,40 +2039,133 @@ body.is-points-detail .simulation-switch {
 .toolbar > .tabs { align-items: center; }
 .toolbar > .tabs > .tab { height: calc(var(--toolbar-control-height) - 4px); }
 
-/* Team plan is part of the identity; balances share one expanded overview. */
+/* Team plan is part of the identity; the overview follows the supplied compact card layout. */
 .team-name-row { flex-wrap: wrap; }
 .team-plan { display: inline-flex; align-items: center; gap: 6px; margin-left: 10px; font-size: 12px; font-weight: 500; }
-.summary-grid { grid-template-columns: minmax(0, 1fr) 200px; }
-.credits-card { padding: 20px; }
-.credit-summary-actions { position: absolute; top: 18px; right: 20px; z-index: 1; display: flex; align-items: center; }
-.credit-summary-modules { display: grid; grid-template-columns: 1.35fr 1fr; align-items: stretch; min-height: 100px; }
-.credit-summary-module { display: flex; min-width: 0; flex-direction: column; justify-content: center; padding: 22px 20px 4px; }
-.credit-summary-module:first-child { padding-left: 4px; }
-.credit-summary-module:last-child { padding-right: 4px; }
-.credit-summary-module + .credit-summary-module { border-left: 1px solid var(--line-strong); }
-.credit-summary-primary { padding-right: 28px; }
-.credit-summary-module .large-number { margin-top: 4px; font-size: 28px; line-height: 34px; font-weight: 600; }
-.credit-summary-primary .large-number { font-size: 34px; line-height: 38px; font-weight: 600; }
-.credit-summary-module .card-label { display: flex; align-items: center; gap: 8px; }
-.credit-summary-module .card-label::before { width: 8px; height: 8px; flex: 0 0 8px; border-radius: 50%; background: #e2dbea; content: ''; }
-.credit-summary-module .credit-unallocated-label::before { background: #8252ed; }
-.credit-proportion { overflow: hidden; height: 6px; margin: 10px 4px 0; border-radius: 999px; background: #e2dbea; }
-.credit-proportion > span { display: block; width: var(--unallocated-share, 0%); height: 100%; border-radius: inherit; background: #8252ed; transition: width 180ms ease; }
+.summary-grid { grid-template-columns: minmax(0, 2.2fr) minmax(260px, 1fr); gap: 10px; }
+.summary-card { border-color: rgba(22, 22, 27, .06); border-radius: 15px; }
+.credits-card { min-height: 150px; padding: 16px 20px 18px; }
+.credit-summary-header { display: flex; align-items: center; justify-content: space-between; min-height: 20px; }
+.credit-summary-actions { display: flex; align-items: center; }
+.credit-summary-content { display: grid; grid-template-columns: 86px minmax(0, 1fr); align-items: center; gap: 20px; margin-top: 10px; }
+.credit-donut { position: relative; display: grid; width: 82px; height: 82px; flex: 0 0 82px; place-items: center; border-radius: 50%; background: conic-gradient(#8fcae9 0 11%, #e1e3e6 11% 25%, #139be8 25% 100%); }
+.credit-donut::after { position: absolute; inset: 11px; border-radius: 50%; background: #fff; content: ''; }
+.credit-donut-center { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+.credit-donut-center strong { color: #111319; font-size: 22px; font-weight: 650; line-height: 26px; letter-spacing: -.6px; }
+.credit-donut-center span { margin-top: 1px; color: var(--text-secondary); font-size: 10px; line-height: 14px; }
+.credit-donut:focus-visible { outline: 2px solid #1598e5; outline-offset: 4px; }
+.credit-donut-tooltip { position: absolute; z-index: 20; top: 50%; left: calc(100% + 14px); display: grid; width: 218px; gap: 10px; padding: 14px 16px; border: 1px solid rgba(21, 23, 28, .1); border-radius: 10px; background: rgba(255, 255, 255, .98); box-shadow: 0 10px 30px rgba(20, 30, 45, .14); opacity: 0; pointer-events: none; transform: translate(6px, -50%); transition: opacity 160ms ease, transform 160ms ease; }
+.credit-donut-tooltip::before { position: absolute; top: 50%; left: -6px; width: 10px; height: 10px; border-left: 1px solid rgba(21, 23, 28, .1); border-bottom: 1px solid rgba(21, 23, 28, .1); background: #fff; content: ''; transform: translateY(-50%) rotate(45deg); }
+.credit-donut:hover .credit-donut-tooltip,
+.credit-donut:focus .credit-donut-tooltip,
+.credit-donut:focus-within .credit-donut-tooltip { opacity: 1; transform: translate(0, -50%); }
+.credit-tooltip-row { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; align-items: center; gap: 8px; color: #5f626b; font-size: 12px; line-height: 18px; white-space: nowrap; }
+.credit-tooltip-row strong { color: #202126; font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.credit-tooltip-dot { width: 8px; height: 8px; border-radius: 50%; }
+.credit-tooltip-dot.is-unallocated { background: #139be8; }
+.credit-tooltip-dot.is-assigned { background: #8fcae9; }
+.credit-tooltip-dot.is-consumed { background: #e1e3e6; box-shadow: inset 0 0 0 1px rgba(20, 30, 45, .08); }
+.credit-balance-panel { min-width: 0; min-height: 86px; padding: 16px 18px 12px; border-radius: 12px; background: #fbfbfc; }
+.credit-balance-main { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 20px; }
+.credit-balance-title { display: flex; align-items: center; gap: 5px; color: #202126; font-size: 16px; font-weight: 600; white-space: nowrap; }
+.credit-balance-title .info-dot { width: 13px; height: 13px; font-size: 8px; }
+.credit-balance-main .large-number { margin: 0; font-size: 24px; font-weight: 500; line-height: 32px; letter-spacing: -.5px; white-space: nowrap; }
+.credit-balance-breakdown { display: flex; flex-wrap: wrap; gap: 12px 28px; margin-top: 10px; color: #87909b; font-size: 12px; line-height: 18px; }
+.credit-balance-breakdown span { display: inline-flex; align-items: center; gap: 4px; }
+.credit-balance-breakdown strong { color: inherit; font-weight: 500; }
+.credit-legend { display: inline-block; width: 3px; height: 14px; border-radius: 2px; }
+.credit-legend-unallocated { background: #11a8f1; }
+.credit-legend-assigned { background: #94d0ef; }
+.seats-card { min-height: 150px; padding: 17px 20px; }
+.seats-card .card-label { font-size: 12px; }
+.seats-card .seat-number { margin-top: 12px; font-size: 24px; line-height: 32px; }
+.seats-card .summary-topline > .link-button { top: 17px; right: 20px; }
 @media (max-width: 900px) {
   .summary-grid { grid-template-columns: 1fr; }
   .team-plan { margin-left: 0; }
 }
-@media (max-width: 1080px) {
-  .credit-summary-modules { grid-template-columns: 1.25fr 1fr; }
-  .credit-summary-module { padding-left: 14px; padding-right: 14px; }
-  .credit-summary-primary { padding-left: 10px; padding-right: 18px; }
+@media (min-width: 901px) and (max-width: 1080px) {
+  .summary-grid { grid-template-columns: minmax(0, 1.8fr) minmax(230px, .8fr); }
+  .credit-summary-content { gap: 14px; }
 }
 @media (max-width: 600px) {
-  .credit-summary-modules { grid-template-columns: 1fr; gap: 20px; }
-  .credit-summary-module { padding: 0; }
-  .credit-summary-primary { padding-top: 20px; }
-  .credit-summary-module + .credit-summary-module { border-left: 0; border-top: 1px solid var(--line-strong); padding-top: 20px; }
+  .credit-summary-content { grid-template-columns: 1fr; justify-items: center; }
+  .credit-balance-panel { width: 100%; }
+  .credit-balance-main { align-items: flex-start; flex-direction: column; gap: 4px; }
+  .credit-donut-tooltip { top: calc(100% + 12px); left: 50%; transform: translate(-50%, 6px); }
+  .credit-donut-tooltip::before { top: -6px; left: 50%; transform: translateX(-50%) rotate(135deg); }
+  .credit-donut:hover .credit-donut-tooltip,
+  .credit-donut:focus .credit-donut-tooltip,
+  .credit-donut:focus-within .credit-donut-tooltip { transform: translate(-50%, 0); }
 }
+
+/* Two design proposals for the credit-management workspace. */
+.credit-scheme-switch-row { display: flex; justify-content: center; margin: 28px 0 4px; }
+.credit-scheme-switch { display: inline-flex; gap: 4px; padding: 4px; border-radius: 14px; background: #ededf0; }
+.credit-scheme-tag { min-width: 98px; height: 42px; padding: 0 20px; border: 0; border-radius: 12px; color: #696a73; background: transparent; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+.credit-scheme-tag:hover { color: #111319; }
+.credit-scheme-tag.is-active { color: #111319; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .08); }
+.credit-scheme-tag:focus-visible { outline: 2px solid #1598e5; outline-offset: 2px; }
+#panel-credits.is-scheme-overview .credit-workspace-toolbar { display: none; }
+#pointsOverview.is-all-types { display: grid; min-height: 92px; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; padding: 0; }
+.pool-summary-item { display: flex; min-width: 0; flex-direction: column; justify-content: center; gap: 6px; padding: 18px 28px; }
+.pool-summary-item + .pool-summary-item { border-left: 1px solid var(--line); }
+.pool-summary-item span { overflow: hidden; color: var(--text-secondary); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.pool-summary-item strong { color: #202126; font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; line-height: 1.2; }
+.points-table.scheme-one-table { min-width: 900px; grid-template-columns: minmax(190px, 1.35fr) minmax(105px, .72fr) minmax(100px, .72fr) minmax(140px, .9fr) minmax(150px, 1fr) minmax(120px, .78fr); }
+.points-table.scheme-two-table { min-width: 740px; grid-template-columns: minmax(220px, 1.6fr) minmax(110px, 1fr) minmax(100px, 1fr) minmax(160px, 1.2fr) 122px; }
+.scheme-credit-select { position: relative; display: inline-flex; width: max-content; max-width: 132px; align-items: center; }
+.scheme-credit-select select { width: 100%; min-width: 106px; padding: 7px 27px 7px 9px; border: 0; outline: 0; color: #26272c; background: transparent; font: inherit; font-size: 14px; appearance: none; cursor: pointer; }
+.scheme-credit-select:focus-within { border-radius: 7px; outline: 2px solid #1598e5; outline-offset: 1px; }
+.scheme-credit-chevron { position: absolute; right: 8px; top: 50%; color: #303137; font-size: 16px; pointer-events: none; transform: translateY(-55%); }
+.credit-type-empty { color: #9a9ba1; }
+.scheme-one-table .point-value, .scheme-two-table .point-value { color: #69bff3; }
+
+.sr-only { position: absolute; overflow: hidden; width: 1px; height: 1px; padding: 0; border: 0; margin: -1px; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+@media (max-width: 700px) {
+  #pointsOverview.is-all-types { min-width: 620px; grid-template-columns: repeat(3, minmax(180px, 1fr)); }
+  #panel-credits.is-scheme-overview #creditTypeContent { overflow-x: auto; }
+}
+
+
+/* Review controls share the compact simulation styling at every viewport. */
+:root { --credit-purple: #8557ff; --credit-purple-light: #c8b5ff; }
+.tool-switch { height: auto; min-height: 32px; flex-shrink: 0; }
+.tool-switch summary { display: inline-flex; align-items: center; gap: 4px; padding: 4px 7px; cursor: pointer; list-style: none; color: var(--text-secondary); font-size: 11px; white-space: nowrap; }
+.tool-switch summary::-webkit-details-marker { display: none; }
+.tool-switch summary img { width: 12px; height: 12px; transform: rotate(90deg); }
+.tool-switch:not([open]) summary { flex-direction: row-reverse; }
+.tool-switch[open] summary img { transform: rotate(-90deg); }
+.tool-options { display: inline-flex; align-items: center; gap: 2px; }
+.tool-switch:not([open]) .tool-options { display: none; }
+.tool-switch[open] { display: flex; }
+.topbar { height: auto; min-height: 64px; flex-wrap: wrap; padding-top: 12px; padding-bottom: 12px; }
+.point-value, .scheme-one-table .point-value, .scheme-two-table .point-value, .credit-readonly, .credit-balance-breakdown strong { color: var(--text); }
+.point-gem, .credit-gem { color: var(--credit-purple); }
+.credit-tooltip-dot.is-unallocated, .credit-legend-unallocated { background: var(--credit-purple); }
+.credit-tooltip-dot.is-assigned, .credit-legend-assigned { background: var(--credit-purple-light); }
+.credit-tooltip-row[hidden] { display: none; }
+.pool-summary-item { position: relative; }
+.pool-summary-item + .pool-summary-item { border-left: 0; }
+.pool-summary-item + .pool-summary-item::before { content: ''; position: absolute; left: 0; top: 16px; bottom: 16px; width: 1px; background: var(--line); }
+.credit-select-trigger { display: inline-flex; align-items: center; gap: 4px; border: 0; padding: 7px 0; background: transparent; font: inherit; color: #0f1419; cursor: pointer; white-space: nowrap; }
+.credit-select-trigger img, .credit-select-menu img { width: 16px; height: 16px; flex: 0 0 16px; }
+.credit-select-menu { position: fixed; z-index: 100; width: 160px; padding: 8px 4px; border-radius: 12px; background: #fff; box-shadow: 0 8px 28px rgba(0,0,0,.08); display: grid; gap: 4px; }
+.credit-select-menu button { display: flex; align-items: center; justify-content: space-between; gap: 8px; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #0f1419; font: inherit; font-size: 13px; line-height: 22px; cursor: pointer; }
+.credit-select-menu button[aria-selected="true"], .credit-select-menu button:hover, .credit-select-menu button:focus-visible { background: rgba(0,0,0,.05); }
+@media (max-width: 1050px) { .page-shell { padding-top: 112px; } }
+@media (max-width: 700px) { .topbar { padding: 8px 12px; gap: 6px; } .tool-options { flex-wrap: wrap; } .tool-switch { max-width: 100%; } .page-shell { padding-top: 156px; } }
+/* The exported glyphs use the dark-theme fill; retain their paths and tint for this light surface. */
+.tool-switch summary img, .credit-select-trigger img, .credit-select-menu img { filter: brightness(0); }
+.credit-select-trigger img { width: 12px; height: 12px; flex-basis: 12px; }
+
+@font-face { font-family: Montserrat; font-style: normal; font-weight: 400; font-display: swap; src: url('data:font/ttf;base64,AAEAAAARAQAABAAQR1BPUwpp8T8AAAkwAAACfkdTVUJErlAXAAAEIAAAAQpPUy8ye+RjdgAAApwAAABgU1RBVOeSzC4AAAH8AAAASGNtYXAAgwBsAAABwAAAADxjdnQgEBkFaQAAAvwAAAB8ZnBnbeIZnloAABfMAAAPlGdhc3AAAAAQAAABHAAAAAhnbHlmDSJQrwAAC7AAAAwcaGVhZCP81ysAAAGIAAAANmhoZWEIdAYxAAABZAAAACRobXR4VwQHdgAAA3gAAACobG9jYU3lSpIAAAJEAAAAVm1heHAC9BCBAAABJAAAACBuYW1lNQlcuQAABtQAAAJacG9zdP+fADIAAAFEAAAAIHByZXAuvqJMAAAFLAAAAagAAQAB//8ADwABAAAAKgB0AA8AWAAJAAIAEAAvAJoAAAIDD4MABAABAAMAAAAAAAD/nAAyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA8j/BQAABlH+ePzJBjED6AAAAAAAAAAAAAAAAAAAACoAAQAAAAkAAE2kT9dfDzz1AAsD6AAAAADc9gCsAAAAAOM2k23+eP41BjED+gAAAAYAAgAAAAAAAAAAAAIAAAADAAAAFAADAAEAAAAUAAQAKAAAAAYABAABAAIAIAA5//8AAAAgADD//wAJ/9EAAQAAAAAAAAABAAEACAACAAAAFAACAAAAJAACd2dodAEAAABpdGFsAR0AAQAUAAQAAwABAAIBHgAAAAAAAQAAAAMAAAACAREBkAAAArwAAAAAABQARgBWAIUAtQDRAQIBSgFhAbIB+gIsAkMCcwKjAr8C8wM/A1YDpwPzBBgELwRYBIcEogTQBRIFKAVyBbQFvQXGBc8F2AXhBeoF8wX8BgUGDgYOAAAABAJ8AZAABQAAAooCWAAAAEsCigJYAAABXgAyATsAAAAAAAAAAAAAAACgAAL/QAAkewAAAAAAAAAAVUxBIADAACAAOQPI/wUAAARVAcUgAAGXAAAAAAINArwAAAAgAAMC5gADArwABQK8AAMCIwAFAAD/+wAA//sAAP/9/z7//QK8AAMAAP/9AAAAFAAUABMAEwAUABMAEwAUABMAFAAUABMAFAAUABMAEwAUABMAEwAUAA0AEwAPABQAFAATABEAFAAUABMAEwAOABIAFAATABMAGAI7AlgABQGpAksAKAKWADQBaQAJAjgAEgI0AAkClQAoAjYAFgJhADQCTQAgAn4AMAJhAB8CvABDArwAlAK8AEICvABEArwAPAK8AEoCvABSArwATQK8AEACvABJAa4AIAGuAFQBrgAgAa4AHwGuABsBrgAiAa4AKgGuACcBrgAfAa4AJQGuACABrgBUAa4AIAGuAB8BrgAbAa4AIgGuACoBrgAnAa4AHwGuACUBBgAAAAEAAAAKADIAcgADREZMVAAUY3lybAAUbGF0bgAUAAQAAAAA//8ABQAAAAEAAgADAAQABWRub20AOmZyYWMAMm51bXIALHBudW0AJnRudW0AIAAAAAEABgAAAAEABQAAAAEAAAAAAAIAAgADAAAAAQABAAcAgAByAIAARAA2AB4AEAABAAAAAQAIAAEAdgAKAAEAAAABAAgAAQAG//YAAgABAAsAFAAAAAEAAAABAAgAAQAg//YABgAAAAEACAADAAEAHAABABIAAAABAAAABAACAAEAHwAoAAAAAgABABUAHgAAAAEAAAABAAgAAQAUABQAAQAAAAEACAABAAYAHgACAAEAAQAKAAAAAED/PDQ7VTknZB84J/8fNyb/HzYl/x81JfofNCVUHzMk/x8yI/8fMSL/HzAh/x8vIacfLiD/Hy0f/x8sHv8fKx5kHyod/x8pHVQfKBz/HyEZ/x8gGv8fHxn/Hx4W/x8dF/8fHBb/Hxs8Gf9bGDwW/1saPBn/Wxc8Fv9bFRlAFv9aE6cSVRGnEFUSWRBZDacMVQWnBFUMWQRZDwQfBD8EXwR/BL8E3wQHD6cOVQseClUHHgZVAacAVQ5ZMA6QDgIKWQZZIAYB4AYBAFkPAG8AjwDPAN8ABd8AAcAAAR8APwBfAH8AnwAFCS0IVQMtAlUIWQJZDwIfAj8CXwJ/Ar8C3wIHthAAA0BABQG4AZCwVCtLsDdSS7AJUFuwAYiwJVOwAYiwQFFasAaIsABVWltYsQEBjlmFjY0AHUJLsJBTWLIDAAAdQlmxAgJDUVixBAOOWUJzACsAKysrc3NzdAArc3QAKwArcwArKysrK3MAKwArKysAKwArKysBKwErASsBKwErASsAKysBKwArKwErACsrKysBKwArKysBKwArKwErKysAKysrKxgAAAAMAJYAAwABBAkAAACwARQAAwABBAkAAQAUAQAAAwABBAkAAgAOAPIAAwABBAkAAwA4ALoAAwABBAkABAAkAJYAAwABBAkABQAaAHwAAwABBAkABgAkAFgAAwABBAkADgA2ACIAAwABBAkBAAAMABYAAwABBAkBEQAOAPIAAwABBAkBHQAMAAoAAwABBAkBHgAKAAAAUgBvAG0AYQBuAEkAdABhAGwAaQBjAFcAZQBpAGcAaAB0AGgAdAB0AHAAcwA6AC8ALwBvAHAAZQBuAGYAbwBuAHQAbABpAGMAZQBuAHMAZQAuAG8AcgBnAE0AbwBuAHQAcwBlAHIAcgBhAHQALQBSAGUAZwB1AGwAYQByAFYAZQByAHMAaQBvAG4AIAA5AC4AMAAwADAATQBvAG4AdABzAGUAcgByAGEAdAAgAFIAZQBnAHUAbABhAHIAOQAuADAAMAAwADsAVQBMAEEAOwBNAG8AbgB0AHMAZQByAHIAYQB0AC0AUgBlAGcAdQBsAGEAcgBSAGUAZwB1AGwAYQByAE0AbwBuAHQAcwBlAHIAcgBhAHQAQwBvAHAAeQByAGkAZwBoAHQAIAAyADAAMQAxACAAVABoAGUAIABNAG8AbgB0AHMAZQByAHIAYQB0ACAAUAByAG8AagBlAGMAdAAgAEEAdQB0AGgAbwByAHMAIAAoAGgAdAB0AHAAcwA6AC8ALwBnAGkAdABoAHUAYgAuAGMAbwBtAC8ASgB1AGwAaQBlAHQAYQBVAGwAYQAvAE0AbwBuAHQAcwBlAHIAcgBhAHQAKQAAAAEAAAAKADAAQAAEREZMVAAaY3lybAAaZ3JlawAabGF0bgAaAAQAAAAA//8AAQAAAAFrZXJuAAgAAAACAAEAAAACAP4ABgAJAAgAAQAIAAEAAgAAAAgAAgDEAAQAAADOAf4ACQAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/4//YAAAAAAAAAAAAAAAAAAAAA//gAAAAAAAAAAAAA//sAAAAAAAD/8v/7//sAAAAAAAr//gAA//j/5//O//H//gAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/7P/t/+3/vwAAAAoAAP/3AAAAAAAAAAD/9gAAAAAAAP/z//v/+wAA//4AAAAA/+kAAAAA//4AAAAAAAIAAQABAAoAAAABAAEACgABAAUACAAHAAQAAwACAAYAAAABAAkACAACAMwACgABAAIAAAAIAAIAnAAEAAAApgEEAAcACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAQACAAgAAAABAAIABwADAAYABQACAAEAAAAEAAEAAgAAAAgAAgA4AAQAAABcAEIAAgAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAMAAQAJAAoAAQABAAoAAQAGAAkACAAEAAMAAQAHAAIABQACAAIAAQABAAEACgAKAAEAAAACACgAAAIjArwAAwAHAAAzESERJSERISgB+/5VAVv+pQK8/URGAjAAAgA0//oCYwLCAA8AHwAABSImJjU0NjYzMhYWFRQGBicyNjY1NCYmIyIGBhUUFhYBS1F+SEh+UVF+SUl+UT5cNDRcPjxeNDReBlWfcHCfVVWfcHCfVUJDgV5egUNDgV5egUMAAAEACQAAAPYCvAAGAAAzERcjNTMRriDF7QKeIkD9RAAAAQASAAACEgLCABwAADM1AT4CNTQmIyIGByc2NjMyFhYVFAYGBwEnIRUnASMoKA5TUT5fIjMpgE9HaDkTMS/+9RQBsjMBHSc7NBc9RiYoLDA0LVY6IkJJLv76HEAAAAEACf/6AgMCvAAeAAAFIiYnNxYWMzI2NTQmIyM1ExchNSEVAyczMhYVFAYGAQVMhykjInNEV11bYjLYCv56AcLYIxt+fThxBjEpOSMuTEBATDUBDxxAM/7xF3BYO142AAIAKAAAAocCvAAHAA0AADc1ATMBJyEVBzU3NTMRKAFzUP6QJwIz1AJGuDQB0P4wDEC4uECi/mYAAQAW//oCDwK8AB4AAAUiJic3FhYzMjY1NCYmIyMTIRUhNwMnMzIWFhUUBgYBEUuIKCMhc0NZXStmWZUkAX/+niUfJYNqgDk4cAYxKTkjLk9ALUEkAV9AI/7aJDRdPjthOAACADT/+gJCAsIAIQAwAAAFIiYmNTQ2NjMyFhcHJiYjIgYVFBYXJz4CMzIWFhUUBgYnMjY2NTQmIyIGBhUUFhYBU12AQlGQXy9WIR0bRidxhwUJGQtAYDlGajw+bUcyTSxfUTZQLipTBlOdbnehUhIUOhIPkI8WQSATNEkmNF5AQWE1PSVFLkVSKEUsJkUrAAABACAAAAIiArwACgAAMwEXITcVIzUhFQGvAS4W/k8lRwIC/tsCnCAjpsMz/XcABAAw//oCTgLCAA8AGwAnADcAAAUiJiY1NDY2MzIWFhUUBgYnMjY1NCYjIgYVFBYTMjY1NCYjIgYVFBYXIiYmNTQ2NjMyFhYVFAYGAT5UeUE/eVZVekFCelRdaWldXWhoXVJcX09PXltSTm06PW5KSm8+Om8GMFs+PFUuLlU8PlswPUxBQUtLQUFMAVJEOTxDQzs6RDAqTzc6UywsUzo3TyoAAgAf//oCLQLCACEAMAAAFyImJzcWFjMyNjU0JicXDgIjIiYmNTQ2NjMyFhYVFAYGAzI2NjU0JiYjIgYGFRQW7S9VIh0bRyZxhwUJGQpBXzpFazw+bURdgEJRkDY2US0qUj0yTSxfBhIUOhIPkI8XQCATNEkmNF5AQmA1U5xvdqJSAVwoRisnRCslRC9FUgAAAgBD//oCeQLCAA8AHwAABSImJjU0NjYzMhYWFRQGBicyNjY1NCYmIyIGBhUUFhYBXlR/SEh/VFR/SEh/VD5eNTVePj5eNTVeBlegbW6fV1efbm2gV0JEglxdgUREgV1cgkQAAAEAlAAAAkoCvAAMAAAzNTMHERcjNTMRJzMVlOEhINT+Ic1AIAJ+IkD9ZCBAAAABAEIAAAJWAsIAHQAAMzUBPgI1NCYmIyIGByc2NjMyFhYVFAYGBwEnIRVbAS4pKxAnTzw+ZCUyK4NQUG45FDUx/uwNAbozAR0nPDMZJjohJSktMTIwVTciQUov/vocQAABAET/+gJTArwAHgAABSImJzcWFjMyNjU0JiMjNRMXITUhFQMnMzIWFRQGBgFKVYkoJyJwTV1iYWQ24wv+VgHl4yMff4Q7dgYxKTkjLkxAQEw1AQ8cQDP+8RdwWDteNgACADwAAAJ8ArwABwANAAA3NQEzASchFQc1NzUzETwBRVH+uyUCFNQDQ7g0AdD+MAxAuLhAn/5pAAEASv/6AlkCvAAgAAAFIiYmJzcWFjMyNjY1NCYmIyMTIRUhNwMnMzIWFhUUBgYBUTZjUR0jJHdKP1QqK2dbpSUBjP6RJR8jjmyCOzl1BhYnGjkhLSZBKipBJQFfQCP+2iQ1XD06YToAAgBS//oCcwLCACMAMwAABSImJjU0PgIzMhYXByYmIyIGBhUUFhcnPgIzMhYWFRQGBicyNjY1NCYmIyIGBhUUFhYBelyFRzFZfU0tViEcHUYlT3hEBggVCEJlO0dvP0JvSjRQLi5SODVUMixWBlCccFaGXjITEzsSEEOAXhZCHxowRyc1Xj9AYTY9JkUtLUQmJkQtJEYuAAABAE0AAAJ3ArwACgAAMwEXITcVIzUhFQHtAUUW/igkRwIq/sMCnCAjpsMz/XcABABA//oCfALCAA8AGwAnADcAAAUiJiY1NDY2MzIWFhUUBgYnMjY1NCYjIgYVFBYTMjY1NCYjIgYVFBYXIiYmNTQ2NjMyFhYVFAYGAV1Zf0VDf1tbgERGgFlkcXFkZW5uZVlkZldWZWJZVHQ8QHVPUHVBPXUGMVo9PFYuLlY8PVoxPU1AQExMQEBNAVJFOTpERDo5RTEsUDY5Ui0tUjk2UCwAAgBJ//oCagLCACMAMwAABSImJzcWFjMyNjY1NCYnFw4CIyImJjU0NjYzMhYWFRQOAgMyNjY1NCYmIyIGBhUUFhYBFixXIRwdRiVPeEQGCBUHQ2U7R28/QnBHXIVHMVl9GTZTMixWPzNRLi5SBhMTOxIQQ4BeF0IeGi9IJzVeP0BhNlCbcVaGXjIBXCZFLCVFLiZELixFJgACACD//AGOAaMACwAXAAAXIiY1NDYzMhYVFAYnMjY1NCYjIgYVFBbXUmVlUlJlZVI5SUk5OUlJBHJiYXJyYWJyLlZQUFVVUFBWAAEAVAAAAXABnwAMAAAzNTMHERcjNTMRJzMVVJohGIqpIY0tIgGAGS3+bCItAAABACAAAAF4AaMAGQAAMzU3NjY1NCYjIgYHJzY2MzIWFRQGBwcnIRUwvicZNDsmQBQlGlI2UVEfL6sRAR4jqCMrFR0qFxcdHyBCMB84KpcULQAAAQAf//wBdwGfAB4AABciJic3FhYzMjY1NCYjIzU3FyE1IRUHJzMyFhUUBgbKN1wYFxdOLz06OTwqjwj+8QE5jhcXT1MnTQQdGCgUGysjJColmxQtI5wPQjUiOSEAAAIAGwAAAZABnwAHAA0AADc1EzMDJyEVBzU3NTMVG848zxsBVYwEMGokARH+7wgsamosW/EAAAEAIv/8AXkBnwAdAAAXIiYnNxYWMzI2NTQmIyM3IRUjNwcnMzIWFhUUBgbMNl0XFhdOLz07PlFwGAEB7RsUG2BGUiQnTQQdGCgUGysjIyfdLRm0GB42IyM4IQAAAgAq//wBiQGjAB8ALAAAFyImNTQ2NjMyFhcHJiYjIgYVFBYXJzY2MzIWFhUUBgYnMjY1NCYjIgYVFBYW6VxjN2NDHDoUExMtGEtcBAUOCFI5L0UoKUcxMjo6NjNAGDYEbGJFYDQLDCoKCVVODSUREigxHzglJzsgKi8mJjAwJhQnGgAAAQAnAAABjQGfAAoAADMTFyE3FSM1IRUDiNAR/tYYMAFmyQGKGBpleCP+hAAEAB///AGPAaMADwAbACcAMwAAFyImJjU0NjYzMhYWFRQGBicyNjU0JiMiBhUUFjcyNjU0JiMiBhUUFhciJjU0NjMyFhUUBtY5UiwrUjo7UyssUzo/RUU/PkREPjk8Pjc3PDw3UVdbTU5cWAQeNSMlMxwcMyUjNR4qKyQjLCwjJCvGKB8gJiYfHykhODIxPT4xMTgAAgAl//wBhAGjAB8ALAAAFyImJzcWFjMyNjU0JicXBgYjIiYmNTQ2NjMyFhUUBgYnMjY1NCYmIyIGFRQWpxw5FRMULBhMWwQFDghROi5GKClIL1xjN2MgM0AYNSoyOzsECwwqCglWTQ0lERInMh84JSg6IGtjRGE00jElFCcaLiclMQD//wAgARkBjgLAAgcAFQAAAR3//wBUAR0BcAK8AgcAFgAAAR3//wAgAR0BeALAAgcAFwAAAR3//wAfARkBdwK8AgcAGAAAAR3//wAbAR0BkAK8AgcAGQAAAR3//wAiARkBeQK8AgcAGgAAAR3//wAqARkBiQLAAgcAGwAAAR3//wAnAR0BjQK8AgcAHAAAAR3//wAfARkBjwLAAgcAHQAAAR3//wAlARkBhALAAgcAHgAAAR1ASpmYl5aHhoWEg4KBgH9+fXx7enl4d3Z1dHNycXBvbm1sa2ppaGdmZWRjYmFgX15dXFtaWVhXVlVUU1FQT05NTEtKSUhHRigfEAoJLAGxCwpDI0NlCi0sALEKC0MjQwstLAGwBkOwB0NlCi0ssE8rILBAUVghS1JYRUQbISFZGyMhsECwBCVFsAQlRWFkimNSWEVEGyEhWVktLACwB0OwBkMLLSxLUyNLUVpYIEWKYEQbISFZLSxLVFggRYpgRBshIVktLEtTI0tRWlg4GyEhWS0sS1RYOBshIVktLLACQ1RYsEYrGyEhISFZLSywAkNUWLBHKxshISFZLSywAkNUWLBIKxshISEhWS0ssAJDVFiwSSsbISEhWS0sIyCwAFCKimSxAAMlVFiwQBuxAQMlVFiwBUOLWbBPK1kjsGIrIyEjWGVZLSyxCAAMIVRgQy0ssQwADCFUYEMtLAEgR7ACQyC4EABiuBAAY1cjuAEAYrgQAGNXWliwIGBmWUgtLLEAAiWwAiWwAiVTuAA1I3iwAiWwAiVgsCBjICCwBiUjYlBYiiGwAWAjGyAgsAYlI2JSWCMhsAFhG4ohIyEgWVm4/8EcYLAgYyMhLSyxAgBCsSMBiFGxQAGIU1pYuBAAsCCIVFiyAgECQ2BCWbEkAYhRWLggALBAiFRYsgICAkNgQrEkAYhUWLICIAJDYEIASwFLUliyAggCQ2BCWRu4QACwgIhUWLICBAJDYEJZuEAAsIBjuAEAiFRYsgIIAkNgQlm5QAABAGO4AgCIVFiyAhACQ2BCWbEmAYhRWLlAAAIAY7gEAIhUWLICQAJDYEJZuUAABABjuAgAiFRYsgKAAkNgQlmxKAGIUVi5QAAIAGO4EACIVFi5AAIBALACQ2BCWVlZWVlZWbEAAkNUWEAKBUAIQAlADAINAhuxAQJDVFiyBUAIugEAAAkBALMMAQ0BG7GAAkNSWLIFQAi4AYCxCUAbuAEAsAJDUliyBUAIugGAAAkBQBu4AYCwAkNSWLIFQAi4AgCxCUAbsgVACLoBAAAJAQBZWVm4QACwgIhVuUAAAgBjuAQAiFVaWLMMAA0BG7MMAA0BWVlZQkJCQkItLEWxAk4rI7BPKyCwQFFYIUtRWLACJUWxAU4rYFkbI0tRWLADJUUgZIpjsEBTWLECTitgGyFZGyFZWUQtLCCwAFAgWCNlGyNZsRQUinBFsRAQQ0uKQ1FaWLBAG7BPK1kjsWEGJmAriliwBUOLWSNYZVkjEDotLLADJUljI0ZgsE8rI7AEJbAEJUmwAyVjViBgsGJgK7ADJSAQRopGYLAgY2E6LSywABaxAgMlsQEEJQE+AD6xAQIGDLAKI2VCsAsjQrECAyWxAQQlAT8AP7EBAgYMsAYjZUKwByNCsAEWsQACQ1RYRSNFIBhpimMjYiAgsEBQWGcbZllhsCBjsEAjYbAEI0IbsQQAQiEhWRgBLSwgRbEATitELSxLUbFATytQW1ggRbEBTisgiopEILFABCZhY2GxAU4rRCEbIyGKRbEBTisgiiNERFktLEtRsUBPK1BbWEUgirBAYWNgGyMhRVmxAU4rRC0sI0UgikUjYSBksEBRsAQlILAAUyOwQFFaWrFATytUWliKDGQjZCNTWLFAQIphIGNhGyBjWRuKWWOxAk4rYEQtLAEtLAAtLAWxCwpDI0NlCi0ssQoLQyNDCwItLLACJWNmsAIluCAAYmAjYi0ssAIlY7AgYGawAiW4IABiYCNiLSywAiVjZ7ACJbggAGJgI2ItLLACJWNmsCBgsAIluCAAYmAjYi0sI0qxAk4rLSwjSrEBTistLCOKSiNFZLACJWSwAiVhZLADQ1JYISBkWbECTisjsABQWGVZLSwjikojRWSwAiVksAIlYWSwA0NSWCEgZFmxAU4rI7AAUFhlWS0sILADJUqxAk4rihA7LSwgsAMlSrEBTiuKEDstLLADJbADJYqwZyuKEDstLLADJbADJYqwaCuKEDstLLADJUawAyVGYLAEJS6wBCWwBCWwBCYgsABQWCGwahuwbFkrsAMlRrADJUZgYbCAYiCKIBAjOiMgECM6LSywAyVHsAMlR2CwBSVHsIBjYbACJbAGJUljI7AFJUqwgGMgWGIbIVmwBCZGYIpGikZgsCBjYS0ssAQmsAQlsAQlsAQmsG4rIIogECM6IyAQIzotLCMgsAFUWCGwAiWxAk4rsIBQIGBZIGBgILABUVghIRsgsAVRWCEgZmGwQCNhsQADJVCwAyWwAyVQWlggsAMlYYpTWCGwAFkbIVkbsAdUWCBmYWUjIRshIbAAWVlZsQJOKy0ssAIlsAQlSrAAU1iwABuKiiOKsAFZsAQlRiBmYSCwBSawBiZJsAUmsAUmsHArI2FlsCBgIGZhsCBhZS0ssAIlRiCKILAAUFghsQJOKxtFIyFZYWWwAiUQOy0ssAQmILgCAGIguAIAY4ojYSCwXWArsAUlEYoSiiA5ili5AF0QALAEJmNWYCsjISAQIEYgsQJOKyNhGyMhIIogEEmxAk4rWTstLLkAXRAAsAklY1ZgK7AFJbAFJbAFJrBtK7FdByVgK7AFJbAFJbAFJbAFJbBvK7kAXRAAsAgmY1ZgKyCwAFJYsFArsAUlsAUlsAclsAclsAUlsHErsAIXOLAAUrACJbABUlpYsAQlsAYlSbADJbAFJUlgILBAUlghG7AAUlggsAJUWLAEJbAEJbAHJbAHJUmwAhc4G7AEJbAEJbAEJbAGJUmwAhc4WVlZWVkhISEhIS0suQBdEACwCyVjVmArsAclsAclsAYlsAYlsAwlsAwlsAklsAglsG4rsAQXOLAHJbAHJbAHJrBtK7AEJbAEJbAEJrBtK7BQK7AGJbAGJbADJbBxK7AFJbAFJbADJbACFzggsAYlsAYlsAUlsHErYLAGJbAGJbAEJWWwAhc4sAIlsAIlYCCwQFNYIbBAYSOwQGEjG7j/wFBYsEBgI7BAYCNZWbAIJbAIJbAEJrACFziwBSWwBSWKsAIXOCCwAFJYsAYlsAglSbADJbAFJUlgILBAUlghG7AAUliwBiWwBiWwBiWwBiWwCyWwCyVJsAQXOLAGJbAGJbAGJbAGJbAKJbAKJbAHJbBxK7AEFziwBCWwBCWwBSWwByWwBSWwcSuwAhc4G7AEJbAEJbj/wLACFzhZWVkhISEhISEhIS0ssAQlsAMlh7ADJbADJYogsABQWCGwZRuwaFkrZLAEJbAEJQawBCWwBCVJICBjsAMlIGNRsQADJVRbWCEhIyEHGyBjsAIlIGNhILBTK4pjsAUlsAUlh7AEJbAEJkqwAFBYZVmwBCYgAUYjAEawBSYgAUYjAEawABYAsAAjSAGwACNIACCwASNIsAIjSAEgsAEjSLACI0gjsgIAAQgjOLICAAEJIzixAgEHsAEWWS0sIxANDIpjI4pjYGS5QAAEAGNQWLAAOBs8WS0ssAYlsAklsAklsAcmsHYrI7AAVFgFGwRZsAQlsAYmsHcrsAUlsAUmsAUlsAUmsHYrsABUWAUbBFmwdystLLAHJbAKJbAKJbAIJrB2K4qwAFRYBRsEWbAFJbAHJrB3K7AGJbAGJrAGJbAGJrB2KwiwdystLLAHJbAKJbAKJbAIJrB2K4qKCLAEJbAGJrB3K7AFJbAFJrAFJbAFJrB2K7AAVFgFGwRZsHcrLSywCCWwCyWwCyWwCSawdiuwBCawBCYIsAUlsAcmsHcrsAYlsAYmsAYlsAYmsHYrCLB3Ky0sA7ADJbADJUqwBCWwAyVKArAFJbAFJkqwBSawBSZKsAQmY4qKY2EtLLFdDiVgK7AMJhGwBSYSsAolObAHJTmwCiWwCiWwCSWwfCuwAFCwCyWwCCWwCiWwfCuwAFBUWLAHJbALJYewBCWwBCULsAolELAJJcGwAiWwAiULsAclELAGJcEbsAclsAslsAsluP//sHYrsAQlsAQlC7AHJbAKJbB3K7AKJbAIJbAIJbj//7B2K7ACJbACJQuwCiWwByWwdytZsAolRrAKJUZgsAglRrAIJUZgsAYlsAYlC7AMJbAMJbAMJiCwAFBYIbBqG7BsWSuwBCWwBCULsAklsAklsAkmILAAUFghsGobsGxZKyOwCiVGsAolRmBhsCBjI7AIJUawCCVGYGGwIGOxAQwlVFgEGwVZsAomIBCwAyU6sAYmsAYmC7AHJiAQijqxAQcmVFgEGwVZsAUmIBCwAiU6iooLIyAQIzotLCOwAVRYuQAAQAAbuEAAsABZirABVFi5AABAABu4QACwAFmwfSstLIqKCA2KsAFUWLkAAEAAG7hAALAAWbB9Ky0sCLABVFi5AABAABu4QACwAFkNsH0rLSywBCawBCYIDbAEJrAEJggNsH0rLSwgAUYjAEawCkOwC0OKYyNiYS0ssAkrsAYlLrAFJX3FsAYlsAUlsAQlILAAUFghsGobsGxZK7AFJbAEJbADJSCwAFBYIbBqG7BsWSsYsAglsAclsAYlsAolsG8rsAYlsAUlsAQmILAAUFghsGYbsGhZK7AFJbAEJbAEJiCwAFBYIbBmG7BoWStUWH2wBCUQsAMlxbACJRCwASXFsAUmIbAFJiEbsAYmsAQlsAMlsAgmsG8rWbEAAkNUWH2wAiWwgiuwBSWwgisgIGlhsARDASNhsGBgIGlhsCBhILAIJrAIJoqwAhc4iophIGlhYbACFzgbISEhIVkYLSxLUrEBAkNTWlgjECABPAA8GyEhWS0sI7ACJbACJVNYILAEJVg8GzlZsAFguP/pHFkhISEtLLACJUewAiVHVIogIBARsAFgiiASsAFhsIUrLSywBCVHsAIlR1QjIBKwAWEjILAGJiAgEBGwAWCwBiawhSuKirCFKy0ssAJDVFgMAopLU7AEJktRWlgKOBsKISFZGyEhISFZLSywmCtYDAKKS1OwBCZLUVpYCjgbCiEhWRshISEhWS0sILACQ1SwASO4AGgjeCGxAAJDuABeI3khsAJDI7AgIFxYISEhsAC4AE0cWYqKIIogiiO4EABjVli4EABjVlghISGwAbgAMBxZGyFZsIBiIFxYISEhsAC4AB0cWSOwgGIgXFghISGwALgADBxZirABYbj/qxwjIS0sILACQ1SwASO4AIEjeCGxAAJDuAB3I3khsQACQ4qwICBcWCEhIbgAZxxZioogiiCKI7gQAGNWWLgQAGNWWLAEJrABW7AEJrAEJrAEJhshISEhuAA4sAAjHFkbIVmwBCYjsIBiIFxYilyKWiMhIyG4AB4cWYqwgGIgXFghISMhuAAOHFmwBCawAWG4/5McIyEt') format('truetype'); }
+.allocation-stepper button img { width: 32px; height: 32px; display: block; }
+.seats-card .seat-number .seat-slash { font-size: 20px; }
+
+.points-table.table-row.is-inactive { opacity: .5; }
+
+.team-plan .status-tag { font-size: 12px; }
 
 </style>
   </head>
@@ -2121,19 +2207,20 @@ body.is-points-detail .simulation-switch {
     </aside>
 
     <header class="topbar">
-      <div class="topbar-switches">
-        <div class="simulation-switch solution-switch" role="group" aria-label="方案切换">
-          <button type="button" class="simulation-option is-active" data-solution-mode="one" aria-pressed="true">方案一</button>
-          <button type="button" class="simulation-option" data-solution-mode="two" aria-pressed="false">方案二</button>
+      <details class="simulation-switch tool-switch" open>
+        <summary aria-label="展开或收起方案切换">方案<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></summary>
+        <div class="tool-options" role="tablist" aria-label="积分管理方案">
+          <button class="simulation-option is-active" role="tab" aria-selected="true" data-credit-scheme="overview">方案一</button>
+          <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="tabs">方案二</button>
         </div>
-        <div class="simulation-switch" role="group" aria-label="模拟工具">
-          <span class="simulation-switch-label">模拟</span>
-          <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
-          <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
-          <span class="simulation-divider" aria-hidden="true"></span>
-          <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button>
-        </div>
-      </div>
+      </details>
+      <details class="simulation-switch tool-switch" open><summary aria-label="展开或收起模拟工具">模拟<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></summary><div class="tool-options" role="group" aria-label="模拟工具">
+        <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
+        <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
+        <span class="simulation-divider" aria-hidden="true"></span>
+        <button class="simulation-option is-active" data-consumption="off" aria-pressed="true">不消耗</button>
+        <button class="simulation-option" data-consumption="on" aria-pressed="false">模拟消耗</button>
+        <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button></div></details>
       <button class="credit-pill" data-action="buy">
         <span class="credit-gem" aria-hidden="true">✦</span>
         <span id="headerCredit">7,698</span>
@@ -2151,8 +2238,8 @@ body.is-points-detail .simulation-switch {
             <div class="team-name-row">
               <h1 id="teamTitle">Team-12be3d2</h1>
               <button class="icon-button edit-button" data-action="rename" aria-label="修改团队名称">⌕</button>
-              <span class="team-plan" title="会员有效期：2026-10-08">高级团队会员 <span class="status-tag">生效中</span></span>
-              <button class="link-button" data-action="renew">续费</button>
+              <span class="team-plan" title="会员有效期：2026-10-08"><span class="status-tag">高级团队会员·生效中</span></span>
+              <button class="link-button" data-action="renew">续费升级</button>
             </div>
             <p>团队 ID：7682691865522607422 <button class="copy-button" data-copy="7682691865522607422">复制</button></p>
           </div>
@@ -2162,25 +2249,37 @@ body.is-points-detail .simulation-switch {
 
       <section class="summary-grid" aria-label="团队概览">
         <article class="summary-card credits-card">
-          <div class="credit-summary-actions"><button class="link-button" data-action="details">明细</button><button class="link-button" data-action="buy">购买</button></div>
-          <div class="credit-summary-modules">
-            <section class="credit-summary-module credit-summary-primary" aria-label="剩余总积分">
-              <div class="card-label credit-total-label">剩余总积分</div>
-              <div class="large-number" id="availableTotal">0</div>
-            </section>
-            <section class="credit-summary-module" aria-label="待分配总积分">
-              <div class="card-label credit-unallocated-label">待分配总积分</div>
-              <div class="large-number" id="unallocatedSummaryTotal">0</div>
+          <div class="credit-summary-header">
+            <div class="card-label">积分概览</div>
+            <div class="credit-summary-actions"><button class="link-button" data-action="details">明细</button><button class="link-button" data-action="buy">购买</button></div>
+          </div>
+          <div class="credit-summary-content">
+            <div class="credit-donut" id="allocationDonut" role="img" tabindex="0" aria-label="团队积分剩余比例" aria-describedby="creditDonutTooltip">
+              <div class="credit-donut-center"><strong id="remainingPercent">91%</strong><span>积分剩余</span></div>
+              <div class="credit-donut-tooltip" id="creditDonutTooltip" role="tooltip">
+                <div class="credit-tooltip-row"><i class="credit-tooltip-dot is-unallocated"></i><span>待分配积分</span><strong>✨<span id="tooltipUnallocated">0</span></strong></div>
+                <div class="credit-tooltip-row"><i class="credit-tooltip-dot is-assigned"></i><span>已分配积分</span><strong>✨<span id="tooltipAssigned">0</span></strong></div>
+                <div class="credit-tooltip-row"><i class="credit-tooltip-dot is-consumed"></i><span>已消耗</span><strong>✨<span id="tooltipConsumed">2,000</span></strong></div>
+              </div>
+            </div>
+            <section class="credit-balance-panel" aria-label="剩余总积分">
+              <div class="credit-balance-main">
+                <div class="credit-balance-title">剩余总积分 <span class="info-dot" title="成员剩余积分与待分配积分之和">i</span></div>
+                <div class="large-number" id="availableTotal">0</div>
+              </div>
+              <div class="credit-balance-breakdown">
+                <span><i class="credit-legend credit-legend-unallocated"></i>待分配积分 <strong id="unallocatedSummaryTotal">0</strong></span>
+                <span><i class="credit-legend credit-legend-assigned"></i>已分配积分 <strong id="assignedSummaryTotal">0</strong></span>
+              </div>
             </section>
           </div>
-          <div class="credit-proportion" id="creditProportion" role="meter" aria-label="待分配积分占剩余总积分" aria-valuemin="0" aria-valuenow="0" aria-valuemax="0"><span></span></div>
         </article>
 
         <article class="summary-card seats-card">
           <div class="summary-topline">
             <div>
-              <div class="card-label">席位数</div>
-              <div class="seat-number"><span id="seatUsed">2</span><small>/<span id="seatTotal">3</span></small></div>
+              <div class="card-label">可用席位/总席位</div>
+              <div class="seat-number"><span id="seatUsed">2</span><span class="seat-slash"> / </span><span id="seatTotal">3</span></div>
             </div>
             <button class="link-button" data-action="seats">增加席位</button>
           </div>
@@ -2226,14 +2325,7 @@ body.is-points-detail .simulation-switch {
           <div class="points-overview" id="pointsOverview" aria-live="polite"></div>
           <div class="shortage-banner" id="shortageBanner" hidden></div>
           <div class="table-card points-table-card">
-            <div class="data-table points-table table-head" id="pointsTableHead">
-              <div>用户</div>
-              <div>团队角色</div>
-              <div id="creditConsumedHeader">已消耗</div>
-              <div id="creditBalanceHeader">剩余通用积分</div>
-              <div id="creditActionHeader">操作</div>
-              <div id="creditEditOperationHeader" hidden>操作</div>
-            </div>
+            <div class="data-table points-table table-head" id="pointsTableHead"></div>
             <div id="pointsRows"></div>
           </div>
           </section>
@@ -2452,7 +2544,9 @@ const simulationPresets = {
 };
 
 function cloneSimulationPreset(mode) {
-  return JSON.parse(JSON.stringify(simulationPresets[mode]));
+  const preset = JSON.parse(JSON.stringify(simulationPresets[mode]));
+  creditTypes.forEach(type => { preset.pools[type].total = preset.pools[type].available + preset.members.reduce((sum, member) => sum + member.credits[type], 0); });
+  return preset;
 }
 
 const initialSimulation = cloneSimulationPreset("all");
@@ -2460,11 +2554,13 @@ const initialSimulation = cloneSimulationPreset("all");
 const state = {
   activeView: "team",
   activeTab: "members",
+  creditScheme: "overview",
   activeCreditType: "general",
+  memberCreditTypes: Object.fromEntries(initialSimulation.members.map((member) => [member.id, "general"])),
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
-  solutionMode: "one",
   simulationMode: "all",
+  consumptionMode: "off",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
   seats: initialSimulation.seats,
@@ -2557,10 +2653,34 @@ function visibleCreditTypes() {
 function renderPointCards() {
   const type = state.activeCreditType;
   const pool = state.pools[type];
+  const overviewScheme = state.creditScheme === "overview";
+  $("#panel-credits").classList.toggle("is-scheme-overview", overviewScheme);
+  $("#panel-credits").classList.toggle("is-scheme-tabs", !overviewScheme);
+  $$('[data-credit-scheme]').forEach((button) => {
+    const active = button.dataset.creditScheme === state.creditScheme;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
   $("#creditTypeTabs").innerHTML = visibleCreditTypes().map((key) => `<button type="button" class="credit-subtab${key === type ? ' is-active' : ''}" id="credit-tab-${key}" role="tab" aria-selected="${key === type}" aria-controls="creditTypeContent" tabindex="${key === type ? 0 : -1}" data-credit-tab="${key}">${key === 'general' ? '通用积分' : key === 'sd25' ? 'SD 2.5' : 'SD 2.0'}</button>`).join('');
+  $("#creditTypeTabs").hidden = overviewScheme;
   $("#creditTypeContent").setAttribute("aria-labelledby", "credit-tab-" + type);
-  $("#pointsOverview").innerHTML = `<div class="unallocated-summary"><span>待分配${pool.label}</span><strong>${format(pool.available)}</strong></div><p class="allocation-guidance">支持成员积分灵活调配，回收的积分将归入此处</p>`;
-  $("#creditBalanceHeader").textContent = "剩余" + pool.label;
+  $("#pointsOverview").classList.toggle("is-all-types", overviewScheme);
+  $("#pointsOverview").innerHTML = overviewScheme
+    ? visibleCreditTypes().map((key) => `<div class="pool-summary-item"><span>${key === "general" ? "通用" : key === "sd25" ? "SD 2.5" : "SD 2.0"}待分配积分</span><strong>${format(state.pools[key].available)}</strong></div>`).join("")
+    : `<div class="unallocated-summary"><span>待分配${pool.label}</span><strong>${format(pool.available)}</strong></div><p class="allocation-guidance">支持成员积分灵活调配，回收的积分将归入此处</p>`;
+}
+
+function selectCreditScheme(scheme, focus = false) {
+  if (!["overview", "tabs"].includes(scheme) || scheme === state.creditScheme) return;
+  if (state.editingMemberId !== null) {
+    showToast("请先确认或取消当前积分调整");
+    return;
+  }
+  state.creditScheme = scheme;
+  renderPointCards();
+  renderPointsRows();
+  if (focus) $(`[data-credit-scheme="${scheme}"]`)?.focus();
 }
 
 function selectCreditTab(type, focus = false) {
@@ -2577,16 +2697,13 @@ function selectCreditTab(type, focus = false) {
 }
 
 function renderSimulationSwitch() {
+  $$('[data-consumption]').forEach(button => {
+    const active = button.dataset.consumption === state.consumptionMode;
+    button.classList.toggle('is-active', active);
+    button.setAttribute('aria-pressed', String(active));
+  });
   $$('[data-simulation-mode]').forEach((button) => {
     const active = button.dataset.simulationMode === state.simulationMode;
-    button.classList.toggle("is-active", active);
-    button.setAttribute("aria-pressed", String(active));
-  });
-}
-
-function renderSolutionSwitch() {
-  $$('[data-solution-mode]').forEach((button) => {
-    const active = button.dataset.solutionMode === state.solutionMode;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   });
@@ -2600,7 +2717,7 @@ function allocationStepperMarkup(member, type, field) {
   const min = field === "after" ? 0 : -before;
   const max = field === "after" ? maxAfter : state.pools[type].available;
   const fieldLabel = field === "after" ? "调后" : "调整额";
-  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}>−</button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}>＋</button></div>`;
+  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAALRJREFUeAHt1cFJBEEURdFXsxcLRFDctJEZw2RgCKZgZPbOARFK3Hc5k4Grqh44J4PPffATAAAAAAAAAAAAAAAAAAAAAOBfSnagLktNS81Ara1rdmB6gJu7p5dD6W9JHxrgfPm6bf319/v0nommB7i9f/xIz5IZzhF+vj6fM9Ehs/Uydvk7Mz1AKdvxssQMV1op5ZjJdvGEL2p9WDJQa6c1AAAAAAAAAAAAAAAAAAAAAMD1+AOIlB7QIRJuBwAAAABJRU5ErkJggg==" alt="" /></button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAACXBIWXMAACE4AAAhOAFFljFgAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAOdEVYdFNvZnR3YXJlAEZpZ21hnrGWYwAAAXBJREFUeAHt2U1Kw0AYh/H/K124kY74Qa2b6VG8gTcQj9Ab6EnEk3iUdteCilPcuIgZExWprlLQvhl5frsMyWaeQMg7EgAAAAAAAAAAAAAAAAAAAAAAgJO9g9OL4eH4aXh0MgvH43MVylSoduOVFT8v0+phsa8C7ahAYTSKa5v/vhTCKKpARQb4TwjgjADOCOCMAM4I4IwAzgjgjADOCOBsoB4IMQYlhc4PVFWUXr+vDQYxhKiuUprP1QPuw7h2kplr3Ui5e4DfYJrXdb56flzeypF7gB9Tze1qIqzuFxM58v8GZNvum98z7gHM6mn7JmrrLJnZVM56cyCz0Tx/oJhld+tLpnymqnvIlJad7/1LRZ6ItQcyubLZ+ppVedKXTd0E/wHOCOCMAM4I4IwAzgjgjADOCOCMAM4I4KzMAC+7qR2mfV03w7wSxxCtIgM0p1nJsi4/pqjNVLPO1wIAAAAAAAAAAAAAAAAAAAAAAHDyBmzPTaW9OzQzAAAAAElFTkSuQmCC" alt="" /></button></div>`;
 }
 
 function allocationInputMarkup(member, type) {
@@ -2609,12 +2726,13 @@ function allocationInputMarkup(member, type) {
   return `<div class="allocation-input"><input type="number" min="0" max="${max}" step="1" value="${escapeHTML(Number(state.draftCredits[type]))}" data-draft-input data-draft-field="after" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}调后" /></div>`;
 }
 
-function creditEditorMarkup(member) {
-  const type = state.activeCreditType;
-  return `<div class="allocation-editor-line" data-allocation-type="${type}" role="group" aria-label="${escapeHTML(member.name)}${state.pools[type].label}调配">
-    ${allocationInputMarkup(member, type)}
-    ${allocationStepperMarkup(member, type, "delta")}
-  </div>`;
+function selectedMemberCreditType(memberId) {
+  const selected = state.memberCreditTypes[memberId] || "general";
+  return visibleCreditTypes().includes(selected) ? selected : "general";
+}
+
+function schemeCreditTypeSelector(member, selectedType) {
+  return `<div class="scheme-credit-select"><select class="sr-only" tabindex="-1" aria-hidden="true" data-scheme-credit-type data-member-id="${member.id}">${visibleCreditTypes().map(type => `<option value="${type}"${type === selectedType ? " selected" : ""}>${escapeHTML(state.pools[type].label)}</option>`).join("")}</select><button class="credit-select-trigger" data-credit-menu="${member.id}" aria-label="${escapeHTML(member.name)}的积分类型" aria-haspopup="listbox" aria-expanded="false"><span>${escapeHTML(state.pools[selectedType].label)}</span><img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></button></div>`;
 }
 
 function shortageTypes() {
@@ -2638,62 +2756,74 @@ function readonlyCreditMarkup(member, type, candidate) {
 function renderPointsRows() {
   const type = state.activeCreditType;
   const isEditing = state.editingMemberId !== null;
-  $("#creditConsumedHeader").textContent = isEditing ? "调前" : "已消耗";
-  $("#creditBalanceHeader").textContent = isEditing ? "调后" : "剩余" + state.pools[type].label;
-  $("#creditActionHeader").textContent = isEditing ? "调整额" : "操作";
-  $("#creditEditOperationHeader").hidden = !isEditing;
-  $("#pointsTableHead").classList.toggle("is-credit-editing", isEditing);
+  const overviewScheme = state.creditScheme === "overview";
+  $("#pointsTableHead").className = `data-table points-table table-head ${overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
+  $("#pointsTableHead").innerHTML = overviewScheme && isEditing
+    ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
+    : `<div>用户</div><div>团队角色</div><div>已消耗</div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`;
   $("#pointsRows").innerHTML = state.members.map((member) => {
     const editing = member.id === state.editingMemberId;
     const candidate = isRecoveryCandidate(member);
-    const rowClasses = ["data-table", "points-table", "table-row"];
+    const rowClasses = ["data-table", "points-table", "table-row", overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
     if (editing) rowClasses.push("is-editing");
+    if (isEditing && !editing) rowClasses.push("is-inactive");
     if (candidate) rowClasses.push("is-recovery-candidate");
-    if (editing) {
-      return `<div class="allocation-editor-row" data-member-id="${member.id}">
-        <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
-        ${staticRoleMarkup(member)}
-        <span class="allocation-before">${format(member.credits[type])}</span>
-        ${creditEditorMarkup(member)}
-        <div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>
-      </div>`;
-    }
-    const creditCells = readonlyCreditMarkup(member, type, candidate);
 
     let action = `<button class="action-link" data-edit-credits="${member.id}"${state.editingMemberId !== null ? ' disabled title="请先确认或取消当前成员的修改"' : ''}>积分调配</button>`;
+    if (editing) action = `<div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>`;
     if (candidate) {
       action = `<div class="row-actions"><button class="action-link" data-recover-candidate="${member.id}">回收可用</button></div>`;
     }
 
-    return `
-      <div class="${rowClasses.join(" ")}${isEditing ? " is-credit-editing" : ""}" data-member-id="${member.id}">
+    if (isEditing && !editing) action = '<span class="empty-action">-</span>';
+
+    if (overviewScheme) {
+      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
         <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
         ${staticRoleMarkup(member)}
-        <div>${format(member.consumed[type])}</div>
-        ${creditCells}
-        ${isEditing ? '<div class="editing-adjustment-placeholder"></div>' : ""}
+        ${pointMarkup(editing ? member.consumed[rowType] : consumedTotal(member))}
+        ${isEditing ? (editing ? schemeCreditTypeSelector(member, rowType) : '<div class="credit-type-empty">-</div>') : ""}
+        ${editing ? allocationStepperMarkup(member, type, "after") : pointMarkup(memberTotal(member))}
         <div class="points-operation">${action}</div>
-      </div>
-    `;
+      </div>`;
+    }
+
+    return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
+      <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
+      ${staticRoleMarkup(member)}
+      ${pointMarkup(member.consumed[type])}
+      ${editing ? allocationStepperMarkup(member, type, "after") : readonlyCreditMarkup(member, type, candidate)}
+      <div class="points-operation">${action}</div>
+    </div>`;
   }).join("");
 }
 
 function renderShortageBanner() {
   const banner = $("#shortageBanner");
   banner.hidden = !state.shortage;
-  banner.innerHTML = state.shortage ? '团队待分配积分不足。有余额的成员已高亮，可先回收，再确认追加。' : "";
+  banner.innerHTML = state.shortage ? '团队待分配积分不足，请减少调配数量，或取消本次编辑后先回收其他成员积分。' : "";
 }
 
 function renderSummary() {
   const assigned = assignedTotal();
   const available = availableTotal();
   const total = assigned + available;
+  const consumed = teamConsumedTotal();
+  const gross = total + consumed;
+  const remainingPercent = gross ? Math.round(total / gross * 100) : 0;
+  const first = gross ? available / gross * 100 : 0;
+  const second = gross ? (available + assigned) / gross * 100 : 0;
+  $("#allocationDonut").style.background = gross ? `conic-gradient(var(--credit-purple) 0 ${first}%, var(--credit-purple-light) ${first}% ${second}%, #e1e3e6 ${second}% 100%)` : '#e1e3e6';
+  $("#headerCredit").textContent = format(state.members.find(member => member.locked)?.credits ? memberTotal(state.members.find(member => member.locked)) : 0);
   $("#availableTotal").textContent = format(total);
   $("#unallocatedSummaryTotal").textContent = format(available);
-  const proportion = $("#creditProportion");
-  proportion.style.setProperty("--unallocated-share", `${total ? Math.min(100, available / total * 100) : 0}%`);
-  proportion.setAttribute("aria-valuenow", String(available));
-  proportion.setAttribute("aria-valuemax", String(total));
+  $("#assignedSummaryTotal").textContent = format(assigned);
+  $("#tooltipUnallocated").textContent = format(available);
+  $("#tooltipAssigned").textContent = format(assigned);
+  $("#tooltipConsumed").textContent = format(consumed);
+  $("#remainingPercent").textContent = `${remainingPercent}%`;
+  $("#allocationDonut").setAttribute("aria-label", `积分剩余 ${remainingPercent}%，剩余总积分 ${format(total)}`);
   $("#seatUsed").textContent = String(state.seats.used);
   $("#seatTotal").textContent = String(state.seats.total);
 }
@@ -2785,7 +2915,7 @@ function renderDetailLedger() {
         <div>2026/09/08 21:14</div>
         <div>团队会员积分</div>
         <div>团队</div>
-        <div>+23,100</div>
+        <div>+${format(creditTypes.reduce((sum, type) => sum + simulationPresets[state.simulationMode].pools[type].available + simulationPresets[state.simulationMode].members.reduce((n, member) => n + member.credits[type], 0), 0))}</div>
       </div>
     `;
     return;
@@ -2806,7 +2936,7 @@ function renderDetailLedger() {
 
 function renderPointsDetail() {
   if (!$("#pointsDetailView")) return;
-  const available = availableTotal();
+  const available = remainingTotal();
   const subscription = Math.max(0, available - state.rechargeCredits - state.giftCredits);
   const consumed = teamConsumedTotal();
   const consumedCount = state.members.reduce((count, member) => count + creditTypes.filter((type) => member.consumed[type] > 0).length, 0);
@@ -2834,7 +2964,6 @@ function renderPointsDetail() {
 }
 
 function renderAll() {
-  renderSolutionSwitch();
   renderSimulationSwitch();
   renderMemberRows();
   renderPointCards();
@@ -2914,6 +3043,8 @@ function applySimulationMode(mode) {
   state.pools = preset.pools;
   state.seats = preset.seats;
   state.members = preset.members;
+  if (state.consumptionMode === "on") applyConsumption(true);
+  state.memberCreditTypes = Object.fromEntries(preset.members.map((member) => [member.id, "general"]));
   state.pendingInvites = [];
   state.transactions = [];
   state.rechargeCredits = 0;
@@ -2932,12 +3063,13 @@ function beginCreditEdit(memberId) {
   }
   const member = state.members.find((item) => item.id === Number(memberId));
   if (!member) return;
+  if (state.creditScheme === "overview") state.activeCreditType = selectedMemberCreditType(member.id);
   state.editingMemberId = member.id;
   state.draftCredits = { ...member.credits };
   state.shortage = null;
   renderPointsRows();
   renderShortageBanner();
-  window.setTimeout(() => $("[data-draft-input]")?.select(), 20);
+  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
 }
 
 function cancelCreditEdit() {
@@ -3380,6 +3512,11 @@ async function copyText(value, successMessage) {
 }
 
 document.addEventListener("click", (event) => {
+  const schemeButton = event.target.closest("[data-credit-scheme]");
+  if (schemeButton) {
+    selectCreditScheme(schemeButton.dataset.creditScheme, true);
+    return;
+  }
   const creditTab = event.target.closest("[data-credit-tab]");
   if (creditTab) {
     selectCreditTab(creditTab.dataset.creditTab, true);
@@ -3388,13 +3525,6 @@ document.addEventListener("click", (event) => {
   const simulationButton = event.target.closest("[data-simulation-mode]");
   if (simulationButton) {
     applySimulationMode(simulationButton.dataset.simulationMode);
-    return;
-  }
-  const solutionButton = event.target.closest("[data-solution-mode]");
-  if (solutionButton) {
-    state.solutionMode = solutionButton.dataset.solutionMode;
-    renderSolutionSwitch();
-    showToast(state.solutionMode === "one" ? "已切换至方案一" : "已切换至方案二");
     return;
   }
 
@@ -3530,7 +3660,31 @@ $("#modalBody").addEventListener("change", (event) => {
   if (event.target.id === "recoveryType") updateRecoveryLimit();
 });
 
+document.addEventListener("change", (event) => {
+  const selector = event.target.closest("[data-scheme-credit-type]");
+  if (!selector) return;
+  const memberId = Number(selector.dataset.memberId);
+  state.memberCreditTypes[memberId] = selector.value;
+  if (state.editingMemberId === null) {
+    renderPointsRows();
+    return;
+  }
+  if (memberId !== state.editingMemberId) return;
+  state.activeCreditType = selector.value;
+  state.shortage = null;
+  renderPointCards();
+  renderPointsRows();
+  renderShortageBanner();
+  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
+});
+
 document.addEventListener("keydown", (event) => {
+  const scheme = document.activeElement?.dataset.creditScheme;
+  if (scheme && ['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) {
+    event.preventDefault();
+    selectCreditScheme(event.key === 'Home' ? 'overview' : event.key === 'End' ? 'tabs' : scheme === 'overview' ? 'tabs' : 'overview', true);
+    return;
+  }
   const creditType = document.activeElement?.dataset.creditTab;
   if (creditType && ["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) {
     event.preventDefault();
@@ -3556,6 +3710,101 @@ document.addEventListener("keydown", (event) => {
 });
 
 window.addEventListener("popstate", syncViewFromLocation);
+
+
+function applyConsumption(enabled) {
+  state.members.forEach(member => visibleCreditTypes().forEach(type => {
+    if (enabled) {
+      const amount = Math.floor(member.credits[type] * .1);
+      member.credits[type] -= amount;
+      member.consumed[type] += amount;
+    } else {
+      member.credits[type] += member.consumed[type];
+      member.consumed[type] = 0;
+    }
+  }));
+}
+let creditMenuTrigger = null;
+function closeCreditMenu(restoreFocus = false) {
+  document.querySelector('.credit-select-menu')?.remove();
+  creditMenuTrigger?.setAttribute('aria-expanded', 'false');
+  if (restoreFocus) creditMenuTrigger?.focus();
+  creditMenuTrigger = null;
+}
+function openCreditMenu(trigger) {
+  const alreadyOpen = trigger === creditMenuTrigger;
+  closeCreditMenu();
+  if (alreadyOpen) return;
+  creditMenuTrigger = trigger;
+  trigger.setAttribute('aria-expanded', 'true');
+  const memberId = Number(trigger.dataset.creditMenu);
+  const selected = selectedMemberCreditType(memberId);
+  const menu = document.createElement('div');
+  menu.className = 'credit-select-menu';
+  menu.setAttribute('role', 'listbox');
+  menu.setAttribute('aria-label', trigger.getAttribute('aria-label'));
+  menu.innerHTML = visibleCreditTypes().map(type => `<button role="option" aria-selected="${type === selected}" data-menu-type="${type}" data-member-id="${memberId}"><span>${escapeHTML(state.pools[type].label)}</span>${type === selected ? '<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjE2IiBoZWlnaHQ9IjE2IiB2aWV3Qm94PSIwIDAgMTYgMTYiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZWNrIj4KPHBhdGggaWQ9IlZlY3RvciA4MTggKFN0cm9rZSkiIGZpbGwtcnVsZT0iZXZlbm9kZCIgY2xpcC1ydWxlPSJldmVub2RkIiBkPSJNMTQuNTY1OCAzLjQzNDMxQzE0Ljg3ODIgMy43NDY3MyAxNC44NzgyIDQuMjUzMjcgMTQuNTY1OCA0LjU2NTY5TDYuNTY1NzcgMTIuNTY1N0M2LjI1MzM1IDEyLjg3ODEgNS43NDY4MiAxMi44NzgxIDUuNDM0NCAxMi41NjU3TDEuNDM0NCA4LjU2NTY5QzEuMTIxOTggOC4yNTMyNyAxLjEyMTk4IDcuNzQ2NzMgMS40MzQ0IDcuNDM0MzFDMS43NDY4MiA3LjEyMTkgMi4yNTMzNSA3LjEyMTkgMi41NjU3NyA3LjQzNDMxTDYuMDAwMDggMTAuODY4NkwxMy40MzQ0IDMuNDM0MzFDMTMuNzQ2OCAzLjEyMTg5IDE0LjI1MzMgMy4xMjE4OSAxNC41NjU4IDMuNDM0MzFaIiBmaWxsPSIjRjVGQkZGIi8+CjwvZz4KPC9zdmc+Cg==" alt="" />' : ''}</button>`).join('');
+  document.body.appendChild(menu);
+  const rect = trigger.getBoundingClientRect();
+  menu.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - 168)) + 'px';
+  const height = menu.offsetHeight;
+  menu.style.top = (rect.bottom + height + 8 > window.innerHeight ? Math.max(8, rect.top - height - 4) : rect.bottom + 4) + 'px';
+  menu.querySelector('[aria-selected="true"]').focus();
+}
+document.addEventListener('click', event => {
+  const consume = event.target.closest('[data-consumption]');
+  if (consume && consume.dataset.consumption !== state.consumptionMode) {
+    if (state.editingMemberId !== null) { showToast('请先确认或取消当前积分调整'); return; }
+    closeCreditMenu();
+    state.consumptionMode = consume.dataset.consumption;
+    applyConsumption(state.consumptionMode === 'on');
+    renderAll();
+    showToast(state.consumptionMode === 'on' ? '已模拟各成员各类型积分消耗 10%' : '已还原模拟消耗的积分');
+  }
+  const trigger = event.target.closest('[data-credit-menu]');
+  if (trigger) { openCreditMenu(trigger); return; }
+  const option = event.target.closest('[data-menu-type]');
+  if (option) {
+    const memberId = option.dataset.memberId;
+    const select = document.querySelector(`[data-scheme-credit-type][data-member-id="${memberId}"]`);
+    select.value = option.dataset.menuType;
+    closeCreditMenu();
+    select.dispatchEvent(new Event('change', { bubbles: true }));
+    document.querySelector(`[data-credit-menu="${memberId}"]`)?.focus();
+    return;
+  }
+  if (!event.target.closest('.credit-select-menu')) closeCreditMenu();
+});
+document.addEventListener('keydown', event => {
+  if (!creditMenuTrigger) return;
+  const options = [...document.querySelectorAll('.credit-select-menu [role="option"]')];
+  const index = options.indexOf(document.activeElement);
+  if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(event.key)) {
+    event.preventDefault();
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? options.length - 1 : (index + (event.key === 'ArrowDown' ? 1 : options.length - 1)) % options.length;
+    options[next].focus();
+  }
+  if (event.key === 'Escape') { event.preventDefault(); event.stopImmediatePropagation(); closeCreditMenu(true); }
+  if (event.key === 'Tab') closeCreditMenu(true);
+}, true);
+window.addEventListener('resize', () => closeCreditMenu());
+document.addEventListener('scroll', () => closeCreditMenu(), true);
+const donut = document.querySelector('#allocationDonut');
+donut.addEventListener('pointermove', event => {
+  const rect = donut.getBoundingClientRect();
+  const x = event.clientX - rect.left - rect.width / 2;
+  const y = event.clientY - rect.top - rect.height / 2;
+  const radius = Math.hypot(x, y);
+  const total = remainingTotal() + teamConsumedTotal();
+  let index = -1;
+  if (radius >= rect.width / 2 - 11 && radius <= rect.width / 2 && total) {
+    const fraction = ((Math.atan2(y, x) + Math.PI / 2 + Math.PI * 2) % (Math.PI * 2)) / (Math.PI * 2);
+    index = fraction < availableTotal() / total ? 0 : fraction < remainingTotal() / total ? 1 : 2;
+  }
+  document.querySelectorAll('.credit-tooltip-row').forEach((row, i) => row.hidden = index !== -1 && index !== i);
+});
+donut.addEventListener('pointerleave', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
+donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 
 renderAll();
 switchTab("members");

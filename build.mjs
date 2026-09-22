@@ -1,7 +1,7 @@
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 
 const root = new URL('./', import.meta.url);
-const [source, css, script] = await Promise.all([
+const [source, rawCss, rawScript] = await Promise.all([
   readFile(new URL('index.html', root), 'utf8'),
   readFile(new URL('styles.css', root), 'utf8'),
   readFile(new URL('app.js', root), 'utf8'),
@@ -17,6 +17,13 @@ const svgAssets = new Map(await Promise.all(svgPaths.map(async (path) => {
   const contents = await readFile(new URL(path, root));
   return [path, contents.toString('base64')];
 })));
+let script = rawScript;
+for (const path of ['assets/chevron-down.svg', 'assets/check.svg', 'assets/step-minus.png', 'assets/step-plus.png']) {
+  const bytes = await readFile(new URL(path, root));
+  script = script.replaceAll('./' + path, 'data:' + (path.endsWith('.png') ? 'image/png' : 'image/svg+xml') + ';base64,' + bytes.toString('base64'));
+}
+const font = await readFile(new URL('assets/montserrat-digits.ttf', root));
+const css = rawCss.replaceAll('./assets/montserrat-digits.ttf', 'data:font/ttf;base64,' + font.toString('base64'));
 const html = source
   .replace(svgAssetReference, (_match, path) => `src="data:image/svg+xml;base64,${svgAssets.get(path)}"`)
   .replace(styleReference, () => `<style>\n${css}\n</style>`)
