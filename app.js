@@ -75,7 +75,7 @@ const initialSimulation = cloneSimulationPreset("all");
 
 const state = {
   activeView: "team",
-  activeTab: "members",
+  activeTab: "credits",
   creditScheme: "overview",
   activeCreditType: "general",
   memberCreditTypes: Object.fromEntries(initialSimulation.members.map((member) => [member.id, "general"])),
@@ -1319,5 +1319,5 @@ donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip
 applyConsumption(true);
 resetAllMemberDrafts();
 renderAll();
-switchTab("members");
+switchTab("credits");
 syncViewFromLocation();

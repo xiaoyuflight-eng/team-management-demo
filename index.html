@@ -127,8 +127,8 @@
       <section class="workspace" aria-label="团队管理工作区">
         <div class="toolbar">
           <div class="tabs" role="tablist" aria-label="团队管理分类">
-            <button class="tab is-active" id="tab-members" role="tab" aria-selected="true" aria-controls="panel-members" data-tab="members">成员管理</button>
-            <button class="tab" id="tab-credits" role="tab" aria-selected="false" aria-controls="panel-credits" data-tab="credits">积分管理</button>
+            <button class="tab is-active" id="tab-credits" role="tab" aria-selected="true" aria-controls="panel-credits" data-tab="credits">积分管理</button>
+            <button class="tab" id="tab-members" role="tab" aria-selected="false" aria-controls="panel-members" data-tab="members">成员管理</button>
             <button class="tab" id="tab-invites" role="tab" aria-selected="false" aria-controls="panel-invites" data-tab="invites">团队审批</button>
           </div>
           <div class="toolbar-actions">
@@ -136,7 +136,7 @@
           </div>
         </div>
 
-        <section class="tab-panel is-active" id="panel-members" role="tabpanel" aria-labelledby="tab-members">
+        <section class="tab-panel" id="panel-members" role="tabpanel" aria-labelledby="tab-members" hidden>
           <div class="table-card">
             <div class="data-table member-table table-head">
               <div>用户</div>
@@ -155,7 +155,7 @@
           </div>
         </section>
 
-        <section class="tab-panel" id="panel-credits" role="tabpanel" aria-labelledby="tab-credits" hidden>
+        <section class="tab-panel is-active" id="panel-credits" role="tabpanel" aria-labelledby="tab-credits">
           <div class="credit-workspace-toolbar">
             <div class="credit-subtabs" id="creditTypeTabs" role="tablist" aria-label="积分类型"></div>
           </div>
