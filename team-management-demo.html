@@ -268,6 +268,12 @@ select:focus-visible {
   backdrop-filter: blur(18px);
 }
 
+.topbar-switches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .simulation-switch {
   display: inline-flex;
   height: 32px;
@@ -309,6 +315,10 @@ select:focus-visible {
   color: #fff;
   background: #19191d;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.13);
+}
+
+.solution-switch .simulation-option {
+  min-width: 48px;
 }
 
 .credit-pill {
@@ -2111,12 +2121,18 @@ body.is-points-detail .simulation-switch {
     </aside>
 
     <header class="topbar">
-      <div class="simulation-switch" role="group" aria-label="模拟工具">
-        <span class="simulation-switch-label">模拟</span>
-        <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
-        <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
-        <span class="simulation-divider" aria-hidden="true"></span>
-        <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button>
+      <div class="topbar-switches">
+        <div class="simulation-switch solution-switch" role="group" aria-label="方案切换">
+          <button type="button" class="simulation-option is-active" data-solution-mode="one" aria-pressed="true">方案一</button>
+          <button type="button" class="simulation-option" data-solution-mode="two" aria-pressed="false">方案二</button>
+        </div>
+        <div class="simulation-switch" role="group" aria-label="模拟工具">
+          <span class="simulation-switch-label">模拟</span>
+          <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
+          <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
+          <span class="simulation-divider" aria-hidden="true"></span>
+          <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button>
+        </div>
       </div>
       <button class="credit-pill" data-action="buy">
         <span class="credit-gem" aria-hidden="true">✦</span>
@@ -2447,6 +2463,7 @@ const state = {
   activeCreditType: "general",
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
+  solutionMode: "one",
   simulationMode: "all",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
@@ -2562,6 +2579,14 @@ function selectCreditTab(type, focus = false) {
 function renderSimulationSwitch() {
   $$('[data-simulation-mode]').forEach((button) => {
     const active = button.dataset.simulationMode === state.simulationMode;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function renderSolutionSwitch() {
+  $$('[data-solution-mode]').forEach((button) => {
+    const active = button.dataset.solutionMode === state.solutionMode;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   });
@@ -2809,6 +2834,7 @@ function renderPointsDetail() {
 }
 
 function renderAll() {
+  renderSolutionSwitch();
   renderSimulationSwitch();
   renderMemberRows();
   renderPointCards();
@@ -3362,6 +3388,13 @@ document.addEventListener("click", (event) => {
   const simulationButton = event.target.closest("[data-simulation-mode]");
   if (simulationButton) {
     applySimulationMode(simulationButton.dataset.simulationMode);
+    return;
+  }
+  const solutionButton = event.target.closest("[data-solution-mode]");
+  if (solutionButton) {
+    state.solutionMode = solutionButton.dataset.solutionMode;
+    renderSolutionSwitch();
+    showToast(state.solutionMode === "one" ? "已切换至方案一" : "已切换至方案二");
     return;
   }
 

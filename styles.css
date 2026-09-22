@@ -260,6 +260,12 @@ select:focus-visible {
   backdrop-filter: blur(18px);
 }
 
+.topbar-switches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .simulation-switch {
   display: inline-flex;
   height: 32px;
@@ -301,6 +307,10 @@ select:focus-visible {
   color: #fff;
   background: #19191d;
   box-shadow: 0 2px 7px rgba(0, 0, 0, 0.13);
+}
+
+.solution-switch .simulation-option {
+  min-width: 48px;
 }
 
 .credit-pill {

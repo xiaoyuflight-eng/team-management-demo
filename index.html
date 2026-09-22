@@ -45,12 +45,18 @@
     </aside>
 
     <header class="topbar">
-      <div class="simulation-switch" role="group" aria-label="模拟工具">
-        <span class="simulation-switch-label">模拟</span>
-        <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
-        <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
-        <span class="simulation-divider" aria-hidden="true"></span>
-        <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button>
+      <div class="topbar-switches">
+        <div class="simulation-switch solution-switch" role="group" aria-label="方案切换">
+          <button type="button" class="simulation-option is-active" data-solution-mode="one" aria-pressed="true">方案一</button>
+          <button type="button" class="simulation-option" data-solution-mode="two" aria-pressed="false">方案二</button>
+        </div>
+        <div class="simulation-switch" role="group" aria-label="模拟工具">
+          <span class="simulation-switch-label">模拟</span>
+          <button type="button" class="simulation-option is-active" data-simulation-mode="all" aria-pressed="true">全积分</button>
+          <button type="button" class="simulation-option" data-simulation-mode="general" aria-pressed="false">仅通用</button>
+          <span class="simulation-divider" aria-hidden="true"></span>
+          <button type="button" class="simulation-option simulation-cycle" data-action="new-cycle">新周期发放</button>
+        </div>
       </div>
       <button class="credit-pill" data-action="buy">
         <span class="credit-gem" aria-hidden="true">✦</span>

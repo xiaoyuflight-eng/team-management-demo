@@ -77,6 +77,7 @@ const state = {
   activeCreditType: "general",
   detailAnalysisTab: "model",
   detailLedgerTab: "acquired",
+  solutionMode: "one",
   simulationMode: "all",
   pools: initialSimulation.pools,
   perSeat: { general: 800, sd25: 400, sd20: 240 },
@@ -192,6 +193,14 @@ function selectCreditTab(type, focus = false) {
 function renderSimulationSwitch() {
   $$('[data-simulation-mode]').forEach((button) => {
     const active = button.dataset.simulationMode === state.simulationMode;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+}
+
+function renderSolutionSwitch() {
+  $$('[data-solution-mode]').forEach((button) => {
+    const active = button.dataset.solutionMode === state.solutionMode;
     button.classList.toggle("is-active", active);
     button.setAttribute("aria-pressed", String(active));
   });
@@ -439,6 +448,7 @@ function renderPointsDetail() {
 }
 
 function renderAll() {
+  renderSolutionSwitch();
   renderSimulationSwitch();
   renderMemberRows();
   renderPointCards();
@@ -992,6 +1002,13 @@ document.addEventListener("click", (event) => {
   const simulationButton = event.target.closest("[data-simulation-mode]");
   if (simulationButton) {
     applySimulationMode(simulationButton.dataset.simulationMode);
+    return;
+  }
+  const solutionButton = event.target.closest("[data-solution-mode]");
+  if (solutionButton) {
+    state.solutionMode = solutionButton.dataset.solutionMode;
+    renderSolutionSwitch();
+    showToast(state.solutionMode === "one" ? "已切换至方案一" : "已切换至方案二");
     return;
   }
 
