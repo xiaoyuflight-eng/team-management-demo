@@ -2159,6 +2159,4 @@ body.is-points-detail .simulation-switch {
 .allocation-stepper button img { width: 32px; height: 32px; display: block; }
 .seats-card .seat-number .seat-slash { font-size: 20px; }
 
-.points-table.table-row.is-inactive { opacity: .5; }
-
 .team-plan .status-tag { font-size: 12px; }

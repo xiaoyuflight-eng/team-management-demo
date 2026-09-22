@@ -91,8 +91,7 @@ const state = {
   transactions: [],
   rechargeCredits: 0,
   giftCredits: 0,
-  editingMemberId: null,
-  draftCredits: null,
+  draftCreditsByMember: {},
   shortage: null,
   modal: null,
 };
@@ -120,6 +119,28 @@ function sumCredits(credits) {
 
 function memberTotal(member) {
   return sumCredits(member.credits);
+}
+
+function resetMemberDraft(member) {
+  state.draftCreditsByMember[member.id] = { ...member.credits };
+}
+
+function resetAllMemberDrafts() {
+  state.draftCreditsByMember = Object.fromEntries(state.members.map((member) => [member.id, { ...member.credits }]));
+}
+
+function memberDraft(member) {
+  if (!state.draftCreditsByMember[member.id]) resetMemberDraft(member);
+  return state.draftCreditsByMember[member.id];
+}
+
+function memberDraftChanged(member) {
+  const draft = memberDraft(member);
+  return creditTypes.some((type) => String(draft[type]) !== String(member.credits[type]));
+}
+
+function hasPendingCreditChanges() {
+  return state.members.some(memberDraftChanged);
 }
 
 function consumedTotal(member) {
@@ -197,10 +218,6 @@ function renderPointCards() {
 
 function selectCreditScheme(scheme, focus = false) {
   if (!["overview", "tabs", "delta"].includes(scheme) || scheme === state.creditScheme) return;
-  if (state.editingMemberId !== null) {
-    showToast("请先确认或取消当前积分调整");
-    return;
-  }
   state.creditScheme = scheme;
   renderPointCards();
   renderPointsRows();
@@ -209,11 +226,6 @@ function selectCreditScheme(scheme, focus = false) {
 
 function selectCreditTab(type, focus = false) {
   if (!visibleCreditTypes().includes(type)) return;
-  if (type !== state.activeCreditType && state.editingMemberId !== null) {
-    showToast("请先确认或取消当前积分调整");
-    if (focus) $("#credit-tab-" + state.activeCreditType).focus();
-    return;
-  }
   state.activeCreditType = type;
   renderPointCards();
   renderPointsRows();
@@ -235,19 +247,19 @@ function renderSimulationSwitch() {
 
 function allocationStepperMarkup(member, type, field) {
   const before = member.credits[type];
-  const after = Number(state.draftCredits[type]);
+  const after = Number(memberDraft(member)[type]);
   const maxAfter = before + state.pools[type].available;
   const value = field === "after" ? after : after - before;
   const min = field === "after" ? 0 : -before;
   const max = field === "after" ? maxAfter : state.pools[type].available;
   const fieldLabel = field === "after" ? "调后" : "调整额";
-  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}><img src="./assets/step-minus.png" alt="" /></button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}><img src="./assets/step-plus.png" alt="" /></button></div>`;
+  return `<div class="allocation-stepper"><button type="button" data-draft-delta="-100" data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}减少100"${value <= min ? " disabled" : ""}><img src="./assets/step-minus.png" alt="" /></button><input type="number" min="${min}" max="${max}" step="1" value="${escapeHTML(value)}" data-draft-input data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}" /><button type="button" data-draft-delta="100" data-draft-field="${field}" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}${fieldLabel}增加100"${value >= max ? " disabled" : ""}><img src="./assets/step-plus.png" alt="" /></button></div>`;
 }
 
 function allocationInputMarkup(member, type) {
   const before = member.credits[type];
   const max = before + state.pools[type].available;
-  return `<div class="allocation-input"><input type="number" min="0" max="${max}" step="1" value="${escapeHTML(Number(state.draftCredits[type]))}" data-draft-input data-draft-field="after" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}调后" /></div>`;
+  return `<div class="allocation-input"><input type="number" min="0" max="${max}" step="1" value="${escapeHTML(Number(memberDraft(member)[type]))}" data-draft-input data-draft-field="after" data-member="${member.id}" data-credit-type="${type}" aria-label="${state.pools[type].label}调后" /></div>`;
 }
 
 function selectedMemberCreditType(memberId) {
@@ -277,57 +289,48 @@ function readonlyCreditMarkup(member, type, candidate) {
   return `<div class="${classes.join(" ")}">${format(member.credits[type])}</div>`;
 }
 
+function rowActionMarkup(member) {
+  const changed = memberDraftChanged(member);
+  return `<div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-member="${member.id}"${changed ? "" : " disabled"}>确认</button>${changed ? `<button class="action-link" data-undo-member="${member.id}">撤销</button>` : ""}</div>`;
+}
+
 function renderPointsRows() {
   const type = state.activeCreditType;
-  const isEditing = state.editingMemberId !== null;
   const overviewScheme = state.creditScheme === "overview";
   const deltaScheme = state.creditScheme === "delta";
-  $("#pointsTableHead").className = `data-table points-table table-head ${deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"}`;
+  $("#pointsTableHead").className = `data-table points-table table-head ${deltaScheme ? "scheme-three-table" : overviewScheme ? "scheme-one-table" : "scheme-two-table"}`;
   $("#pointsTableHead").innerHTML = deltaScheme
     ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>调整前 <span class="info-dot" title="成员当前可用积分">i</span></div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>调整后</div><div>调整额 <span class="info-dot" title="本次增加或减少的积分">i</span></div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
-    : overviewScheme && isEditing
+    : overviewScheme
     ? `<div>用户</div><div>团队角色</div><div>已消耗</div><div>积分类型 <span class="info-dot" title="选择本次调配的积分类型">i</span></div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`
     : `<div>用户</div><div>团队角色</div><div>已消耗</div><div>剩余积分</div><div>操作 <span class="info-dot" title="调整成员可用积分">i</span></div>`;
   $("#pointsRows").innerHTML = state.members.map((member) => {
-    const editing = member.id === state.editingMemberId;
-    const candidate = isRecoveryCandidate(member);
-    const rowClasses = ["data-table", "points-table", "table-row", deltaScheme ? "scheme-three-table" : overviewScheme && isEditing ? "scheme-one-table" : "scheme-two-table"];
-    if (editing) rowClasses.push("is-editing");
-    if (isEditing && !editing) rowClasses.push("is-inactive");
-    if (candidate) rowClasses.push("is-recovery-candidate");
-
-    let action = `<button class="action-link" data-edit-credits="${member.id}"${state.editingMemberId !== null ? ' disabled title="请先确认或取消当前成员的修改"' : ''}>积分调配</button>`;
-    if (editing) action = `<div class="row-actions allocation-editor-actions"><button class="action-link confirm-link" data-confirm-credits>确认</button><button class="action-link" data-cancel-credits>取消</button></div>`;
-    if (candidate) {
-      action = `<div class="row-actions"><button class="action-link" data-recover-candidate="${member.id}">回收可用</button></div>`;
-    }
-
-    if (isEditing && !editing) action = '<span class="empty-action">-</span>';
+    const rowClasses = ["data-table", "points-table", "table-row", deltaScheme ? "scheme-three-table" : overviewScheme ? "scheme-one-table" : "scheme-two-table"];
+    const action = rowActionMarkup(member);
 
     if (deltaScheme) {
-      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      const rowType = selectedMemberCreditType(member.id);
       const before = member.credits[rowType];
-      const after = editing ? Number(state.draftCredits[rowType]) : before;
       return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
         <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
         ${staticRoleMarkup(member)}
         ${pointMarkup(member.consumed[rowType])}
         ${pointMarkup(before)}
-        ${editing ? schemeCreditTypeSelector(member, rowType) : `<div class="credit-type-label">${escapeHTML(state.pools[rowType].label)}</div>`}
-        ${editing ? allocationInputMarkup(member, rowType) : pointMarkup(after)}
-        ${editing ? allocationStepperMarkup(member, rowType, "delta") : pointMarkup(0)}
+        ${schemeCreditTypeSelector(member, rowType)}
+        ${allocationInputMarkup(member, rowType)}
+        ${allocationStepperMarkup(member, rowType, "delta")}
         <div class="points-operation">${action}</div>
       </div>`;
     }
 
     if (overviewScheme) {
-      const rowType = editing ? type : selectedMemberCreditType(member.id);
+      const rowType = selectedMemberCreditType(member.id);
       return `<div class="${rowClasses.join(" ")}" data-member-id="${member.id}">
         <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
         ${staticRoleMarkup(member)}
-        ${pointMarkup(editing ? member.consumed[rowType] : consumedTotal(member))}
-        ${isEditing ? (editing ? schemeCreditTypeSelector(member, rowType) : '<div class="credit-type-empty">-</div>') : ""}
-        ${editing ? allocationStepperMarkup(member, type, "after") : pointMarkup(memberTotal(member))}
+        ${pointMarkup(member.consumed[rowType])}
+        ${schemeCreditTypeSelector(member, rowType)}
+        ${allocationStepperMarkup(member, rowType, "after")}
         <div class="points-operation">${action}</div>
       </div>`;
     }
@@ -336,7 +339,7 @@ function renderPointsRows() {
       <div class="user-cell">${avatarMarkup(member)}<span class="member-identity"><span class="user-name">${escapeHTML(member.name)}</span></span></div>
       ${staticRoleMarkup(member)}
       ${pointMarkup(member.consumed[type])}
-      ${editing ? allocationStepperMarkup(member, type, "after") : readonlyCreditMarkup(member, type, candidate)}
+      ${allocationStepperMarkup(member, type, "after")}
       <div class="points-operation">${action}</div>
     </div>`;
   }).join("");
@@ -592,35 +595,10 @@ function applySimulationMode(mode) {
   state.transactions = [];
   state.rechargeCredits = 0;
   state.giftCredits = 0;
-  state.editingMemberId = null;
-  state.draftCredits = null;
   state.shortage = null;
+  resetAllMemberDrafts();
   renderAll();
   showToast(mode === "all" ? "已切换至全积分模拟数据" : "已切换至仅通用积分模拟数据");
-}
-
-function beginCreditEdit(memberId) {
-  if (state.editingMemberId !== null) {
-    showToast("请先确认或取消当前成员的修改");
-    return;
-  }
-  const member = state.members.find((item) => item.id === Number(memberId));
-  if (!member) return;
-  if (state.creditScheme === "overview") state.activeCreditType = selectedMemberCreditType(member.id);
-  state.editingMemberId = member.id;
-  state.draftCredits = { ...member.credits };
-  state.shortage = null;
-  renderPointsRows();
-  renderShortageBanner();
-  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
-}
-
-function cancelCreditEdit() {
-  state.editingMemberId = null;
-  state.draftCredits = null;
-  state.shortage = null;
-  renderPointsRows();
-  renderShortageBanner();
 }
 
 function calculateShortages(member, draft) {
@@ -632,35 +610,42 @@ function calculateShortages(member, draft) {
   }, {});
 }
 
-function confirmCreditEdit() {
-  const member = state.members.find((item) => item.id === state.editingMemberId);
-  if (!member || !state.draftCredits) return;
+function undoMemberCreditEdit(memberId) {
+  const member = state.members.find((item) => item.id === Number(memberId));
+  if (!member) return;
+  resetMemberDraft(member);
+  renderPointsRows();
+  showToast(`已撤销 ${member.name} 的本次修改`);
+}
+
+function confirmMemberCreditEdit(memberId) {
+  const member = state.members.find((item) => item.id === Number(memberId));
+  if (!member) return;
+  const draft = memberDraft(member);
   const invalid = visibleCreditTypes().some((type) => {
-    const amount = Number(state.draftCredits[type]);
-    return String(state.draftCredits[type]).trim() === "" || !Number.isSafeInteger(amount) || amount < 0;
+    const amount = Number(draft[type]);
+    return String(draft[type]).trim() === "" || !Number.isSafeInteger(amount) || amount < 0;
   });
   if (invalid) {
     showToast("剩余积分请输入大于等于 0 的整数");
     return;
   }
-  state.draftCredits = creditTypes.reduce((draft, type) => ({ ...draft, [type]: Math.round(Number(state.draftCredits[type])) }), {});
-  const shortages = calculateShortages(member, state.draftCredits);
+  state.draftCreditsByMember[member.id] = creditTypes.reduce((normalized, type) => ({ ...normalized, [type]: Math.round(Number(draft[type])) }), {});
+  const shortages = calculateShortages(member, state.draftCreditsByMember[member.id]);
   if (Object.keys(shortages).length) {
-    state.shortage = { targetMemberId: member.id, amounts: shortages };
-    renderPointsRows();
-    renderShortageBanner();
-    showToast("待分配余额不足，请先回收高亮成员的可用积分");
+    showToast("待分配余额不足，请减少本次调整数值");
     return;
   }
 
-  commitCreditEdit(member);
+  commitMemberCreditEdit(member);
 }
 
-function commitCreditEdit(member, successMessage = "") {
+function commitMemberCreditEdit(member, successMessage = "") {
+  const draft = memberDraft(member);
   const changes = [];
   creditTypes.forEach((type) => {
     const previous = member.credits[type];
-    const next = state.draftCredits[type];
+    const next = draft[type];
     const delta = next - previous;
     if (!delta) return;
     state.pools[type].available -= delta;
@@ -669,9 +654,7 @@ function commitCreditEdit(member, successMessage = "") {
     recordTransaction(member.name, type, Math.abs(delta), delta > 0 ? "手动分配" : "手动回收");
   });
 
-  state.editingMemberId = null;
-  state.draftCredits = null;
-  state.shortage = null;
+  resetMemberDraft(member);
   renderAll();
   showToast(successMessage || (changes.length ? `已确认 ${member.name} 的积分调整` : "积分未发生变化"));
 }
@@ -867,13 +850,7 @@ function autoRecoverAndAssign() {
 }
 
 function recalculateShortage() {
-  const member = state.members.find((item) => item.id === state.editingMemberId);
-  if (!member || !state.draftCredits) {
-    state.shortage = null;
-    return;
-  }
-  const amounts = calculateShortages(member, state.draftCredits);
-  state.shortage = Object.keys(amounts).length ? { targetMemberId: member.id, amounts } : null;
+  state.shortage = null;
 }
 
 function automaticCredits(name, action = "自动分配") {
@@ -888,8 +865,8 @@ function automaticCredits(name, action = "自动分配") {
 }
 
 function startNewCycle() {
-  if (state.editingMemberId !== null) {
-    showToast("请先确认或取消当前积分调整");
+  if (hasPendingCreditChanges()) {
+    showToast("请先确认或撤销未提交的积分调整");
     return;
   }
   openModal({ type: "new-cycle", title: "模拟新周期发放", subtitle: "按购买商品的每席位积分量发放", body: `<div class="rule-note">每席位：${creditTypes.map(type => `${state.pools[type].label} ${format(state.perSeat[type])}`).join('、')}。按成员列表顺序发放，余额不足时发放该类型剩余积分。</div>`, confirmText: "模拟发放" });
@@ -948,6 +925,7 @@ function handleModalSubmit(event) {
       const credits = automaticCredits(member.name, "周期自动分配");
       creditTypes.forEach(type => member.credits[type] += credits[type]);
     });
+    resetAllMemberDrafts();
     renderAll();
     closeModal();
     showToast("新周期积分已按每席位额度发放；余额不足的类型按剩余量发放");
@@ -963,7 +941,7 @@ function handleModalSubmit(event) {
     });
     state.members = state.members.filter((item) => item.id !== member.id);
     state.seats.used = Math.max(0, state.seats.used - 1);
-    cancelCreditEdit();
+    resetAllMemberDrafts();
     renderAll();
     closeModal();
     showToast(`已删除 ${member.name}，未使用积分已回收`);
@@ -1018,11 +996,12 @@ function handleModalSubmit(event) {
     }
     member.credits[type] -= amount;
     state.pools[type].available += amount;
+    resetMemberDraft(member);
     recordTransaction(member.name, type, amount, "余额回收");
     recalculateShortage();
     renderAll();
     closeModal();
-    showToast(state.shortage ? "已回收积分，仍有分配缺口" : state.editingMemberId !== null ? "团队余额已补足，可确认追加" : "积分已回收到团队待分配余额");
+    showToast("积分已回收到团队待分配余额");
   }
 }
 
@@ -1097,19 +1076,15 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  const editButton = event.target.closest("[data-edit-credits]");
-  if (editButton) {
-    beginCreditEdit(editButton.dataset.editCredits);
+  const confirmButton = event.target.closest("[data-confirm-member]");
+  if (confirmButton) {
+    confirmMemberCreditEdit(confirmButton.dataset.confirmMember);
     return;
   }
 
-  if (event.target.closest("[data-confirm-credits]")) {
-    confirmCreditEdit();
-    return;
-  }
-
-  if (event.target.closest("[data-cancel-credits]")) {
-    cancelCreditEdit();
+  const undoButton = event.target.closest("[data-undo-member]");
+  if (undoButton) {
+    undoMemberCreditEdit(undoButton.dataset.undoMember);
     return;
   }
 
@@ -1118,15 +1093,15 @@ document.addEventListener("click", (event) => {
     const type = deltaButton.dataset.creditType;
     const field = deltaButton.dataset.draftField || "after";
     const delta = Number(deltaButton.dataset.draftDelta);
-    const member = state.members.find(item => item.id === state.editingMemberId);
+    const member = state.members.find(item => item.id === Number(deltaButton.dataset.member));
+    if (!member) return;
+    const draft = memberDraft(member);
     const before = member.credits[type];
     const maxAfter = before + state.pools[type].available;
-    const current = field === "delta" ? Number(state.draftCredits[type]) - before : Number(state.draftCredits[type]);
+    const current = field === "delta" ? Number(draft[type]) - before : Number(draft[type]);
     const next = current + delta;
-    state.draftCredits[type] = Math.max(0, Math.min(maxAfter, Math.round(field === "delta" ? before + next : next)));
-    recalculateShortage();
+    draft[type] = Math.max(0, Math.min(maxAfter, Math.round(field === "delta" ? before + next : next)));
     renderPointsRows();
-    renderShortageBanner();
     return;
   }
 
@@ -1180,22 +1155,20 @@ document.addEventListener("click", (event) => {
 
 document.addEventListener("input", (event) => {
   const input = event.target.closest("[data-draft-input]");
-  if (!input || !state.draftCredits) return;
-  const member = state.members.find(item => item.id === state.editingMemberId);
+  if (!input) return;
+  const member = state.members.find(item => item.id === Number(input.dataset.member));
+  if (!member) return;
+  const draft = memberDraft(member);
   const type = input.dataset.creditType;
   const field = input.dataset.draftField || "after";
   const before = member.credits[type];
   const numeric = Number(input.value);
-  state.draftCredits[type] = input.value === "" ? "" : field === "delta" ? before + numeric : numeric;
-  const line = input.closest("[data-allocation-type]");
-  const counterpart = line?.querySelector(`[data-draft-input][data-draft-field="${field === "delta" ? "after" : "delta"}"]`);
-  if (counterpart && input.value !== "") counterpart.value = field === "delta" ? state.draftCredits[type] : numeric - before;
-  recalculateShortage();
-  $$("#pointsRows .table-row").forEach(row => {
-    const candidate = state.members.find(item => item.id === Number(row.dataset.memberId));
-    row.classList.toggle("is-recovery-candidate", isRecoveryCandidate(candidate));
-  });
-  renderShortageBanner();
+  draft[type] = input.value === "" ? "" : field === "delta" ? before + numeric : numeric;
+  const row = input.closest(".table-row");
+  const counterpart = row?.querySelector(`[data-draft-input][data-credit-type="${type}"][data-draft-field="${field === "delta" ? "after" : "delta"}"]`);
+  if (counterpart && input.value !== "") counterpart.value = field === "delta" ? draft[type] : numeric - before;
+  const operation = row?.querySelector(".points-operation");
+  if (operation) operation.innerHTML = rowActionMarkup(member);
 });
 
 $("#modalForm").addEventListener("submit", handleModalSubmit);
@@ -1208,17 +1181,7 @@ document.addEventListener("change", (event) => {
   if (!selector) return;
   const memberId = Number(selector.dataset.memberId);
   state.memberCreditTypes[memberId] = selector.value;
-  if (state.editingMemberId === null) {
-    renderPointsRows();
-    return;
-  }
-  if (memberId !== state.editingMemberId) return;
-  state.activeCreditType = selector.value;
-  state.shortage = null;
-  renderPointCards();
   renderPointsRows();
-  renderShortageBanner();
-  window.setTimeout(() => $("[data-draft-input]")?.focus(), 20);
 });
 
 document.addEventListener("keydown", (event) => {
@@ -1244,7 +1207,7 @@ document.addEventListener("keydown", (event) => {
   else if (event.key === "Escape" && state.activeView === "points-detail") showTeamManagementPage();
   if (event.key === "Enter" && event.target.matches("[data-draft-input]")) {
     event.preventDefault();
-    confirmCreditEdit();
+    confirmMemberCreditEdit(event.target.dataset.member);
   }
   if ((event.key === "ArrowLeft" || event.key === "ArrowRight") && document.activeElement?.dataset.tab) {
     const tabs = $$("[data-tab]");
@@ -1300,10 +1263,11 @@ function openCreditMenu(trigger) {
 document.addEventListener('click', event => {
   const consume = event.target.closest('[data-consumption]');
   if (consume && consume.dataset.consumption !== state.consumptionMode) {
-    if (state.editingMemberId !== null) { showToast('请先确认或取消当前积分调整'); return; }
+    if (hasPendingCreditChanges()) { showToast('请先确认或撤销未提交的积分调整'); return; }
     closeCreditMenu();
     state.consumptionMode = consume.dataset.consumption;
     applyConsumption(state.consumptionMode === 'on');
+    resetAllMemberDrafts();
     renderAll();
     showToast(state.consumptionMode === 'on' ? '已模拟各成员各类型积分消耗 10%' : '已还原模拟消耗的积分');
   }
@@ -1353,6 +1317,7 @@ donut.addEventListener('pointerleave', () => document.querySelectorAll('.credit-
 donut.addEventListener('focus', () => document.querySelectorAll('.credit-tooltip-row').forEach(row => row.hidden = false));
 
 applyConsumption(true);
+resetAllMemberDrafts();
 renderAll();
 switchTab("members");
 syncViewFromLocation();
