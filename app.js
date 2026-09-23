@@ -76,7 +76,7 @@ const initialSimulation = cloneSimulationPreset("all");
 const state = {
   activeView: "team",
   activeTab: "credits",
-  creditScheme: "overview",
+  creditScheme: "delta",
   activeCreditType: "general",
   memberCreditTypes: Object.fromEntries(initialSimulation.members.map((member) => [member.id, "general"])),
   detailAnalysisTab: "model",

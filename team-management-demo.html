@@ -2212,9 +2212,9 @@ body.is-points-detail .simulation-switch {
       <details class="simulation-switch tool-switch" open>
         <summary aria-label="展开或收起方案切换">方案<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></summary>
         <div class="tool-options" role="tablist" aria-label="积分管理方案">
-          <button class="simulation-option is-active" role="tab" aria-selected="true" data-credit-scheme="overview">方案一</button>
+          <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="overview">方案一</button>
           <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="tabs">方案二</button>
-          <button class="simulation-option" role="tab" aria-selected="false" data-credit-scheme="delta">方案三</button>
+          <button class="simulation-option is-active" role="tab" aria-selected="true" data-credit-scheme="delta">方案三</button>
         </div>
       </details>
       <details class="simulation-switch tool-switch" open><summary aria-label="展开或收起模拟工具">模拟<img src="data:image/svg+xml;base64,PHN2ZyBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiBvdmVyZmxvdz0idmlzaWJsZSIgc3R5bGU9ImRpc3BsYXk6IGJsb2NrOyIgd2lkdGg9IjEyIiBoZWlnaHQ9IjEyIiB2aWV3Qm94PSIwIDAgMTIgMTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxnIGlkPSJpY29uLWNoZXZyb24tZG93biI+CjxwYXRoIGlkPSJPdXRsaW5lZCIgZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xMC41MDUgMy45OTA4N0MxMC43Mzc5IDQuMjI2NTYgMTAuNzM1NyA0LjYwNjQ2IDEwLjUgNC44MzkzOEw2LjQyMTc1IDguODY5NzVDNi4xODgwMiA5LjEwMDczIDUuODExOTcgOS4xMDA3MyA1LjU3ODI0IDguODY5NzVMMS41MDAwMiA0LjgzOTM4QzEuMjY0MzMgNC42MDY0NSAxLjI2MjA5IDQuMjI2NTYgMS40OTUwMiAzLjk5MDg3QzEuNzI3OTQgMy43NTUxOCAyLjEwNzg0IDMuNzUyOTMgMi4zNDM1MyAzLjk4NTg2TDYgNy41OTk0Mkw5LjY1NjQ2IDMuOTg1ODZDOS44OTIxNiAzLjc1MjkzIDEwLjI3MiAzLjc1NTE4IDEwLjUwNSAzLjk5MDg3WiIgZmlsbD0iI0Y1RkJGRiIvPgo8L2c+Cjwvc3ZnPgo=" alt="" /></summary><div class="tool-options" role="group" aria-label="模拟工具">
@@ -2556,7 +2556,7 @@ const initialSimulation = cloneSimulationPreset("all");
 const state = {
   activeView: "team",
   activeTab: "credits",
-  creditScheme: "overview",
+  creditScheme: "delta",
   activeCreditType: "general",
   memberCreditTypes: Object.fromEntries(initialSimulation.members.map((member) => [member.id, "general"])),
   detailAnalysisTab: "model",
